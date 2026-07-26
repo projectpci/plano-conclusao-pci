@@ -95,7 +95,11 @@ body{
 .tab-btn.active{background:var(--green);color:var(--navy);}
 .tab-btn:not(.active):hover{color:#fff;background:rgba(255,255,255,0.12);}
 
-.updated{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.6);white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.updated{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.6);white-space:nowrap;display:flex;align-items:center;gap:14px;}
+.updated-group{display:flex;align-items:center;gap:10px;}
+.updated-divider{width:1px;height:20px;background:rgba(255,255,255,0.18);flex-shrink:0;}
+.updated-field{display:flex;align-items:center;gap:6px;}
+.updated-field .uf-label{font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.45);}
 .docs-link-btn{
   font-family:var(--mono) !important;font-size:10.5px !important;font-weight:500 !important;
   text-transform:none !important;letter-spacing:0.02em !important;
@@ -147,11 +151,6 @@ body{
 .ds-default{background:rgba(140,160,184,0.1);color:var(--text-lo);}
 
 /* ---------- filter bar ---------- */
-.filterbar{
-  background:var(--surface);border:1px solid var(--border);border-radius:10px;
-  padding:16px 18px;margin-bottom:20px;
-  display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;
-}
 .filter-group{display:flex;flex-direction:column;gap:7px;}
 .filter-label{
   font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);
@@ -305,24 +304,6 @@ select:focus, .search-input:focus{border-color:var(--info-blue);}
 .pt-switch input:checked ~ .pt-slider::before{transform:translateX(17px);}
 .pt-switch input:focus-visible ~ .pt-slider{box-shadow:0 0 0 2px var(--green);}
 
-.disc-resp-row{
-  display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center;
-  padding:8px 4px;border-bottom:1px solid var(--border-soft);
-}
-.disc-resp-row:last-child{border-bottom:none;}
-.disc-resp-row .drr-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--text-hi);}
-.disc-resp-row input{
-  font-family:var(--body);font-size:13px;color:var(--text-hi);background:var(--panel-bg);
-  border:1px solid var(--border);border-radius:7px;padding:7px 10px;outline:none;
-}
-.disc-resp-row input:focus{border-color:var(--navy);}
-.disc-resp-row .drr-apply{
-  font-family:var(--mono);font-size:10.5px;text-transform:uppercase;white-space:nowrap;
-  background:var(--navy);color:#fff;border:none;border-radius:6px;padding:7px 12px;cursor:pointer;
-}
-.disc-resp-row .drr-apply:hover{background:var(--navy-700);}
-.disc-resp-row .drr-apply:disabled{opacity:0.4;cursor:not-allowed;}
-
 .dash-charts-wrap{display:grid;gap:20px;min-width:0;}
 .dash-charts-wrap.layout-grid{grid-template-columns:1fr 1.3fr;}
 .dash-charts-wrap.layout-list{grid-template-columns:1fr;}
@@ -439,12 +420,23 @@ footer b{color:var(--info-blue);}
 
 /* ================= ROLE BADGE / SWITCH ================= */
 .role-badge{
-  font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.04em;
-  padding:4px 10px;border-radius:100px;display:flex;align-items:center;gap:6px;white-space:nowrap;
-  background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);cursor:pointer;
+  font-family:var(--mono);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;
+  padding:5px 12px;border-radius:100px;display:flex;align-items:center;gap:7px;white-space:nowrap;
+  background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.22);cursor:pointer;
+  transition:all .15s ease;
 }
 .role-badge .rb-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
 .role-badge:hover{background:rgba(255,255,255,0.18);}
+body.role-admin .role-badge{background:rgba(146,208,80,0.16);border-color:rgba(146,208,80,0.5);color:#fff;}
+body.role-admin .role-badge .rb-dot{background:var(--green);box-shadow:0 0 6px rgba(146,208,80,0.7);}
+body.role-viewer .role-badge{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.75);}
+body.role-viewer .role-badge .rb-dot{background:rgba(255,255,255,0.4);}
+.session-group{padding-left:2px;}
+.logout-btn{
+  background:rgba(229,72,77,0.12) !important;border-color:rgba(229,72,77,0.4) !important;color:#ffb3b5 !important;
+  font-weight:600 !important;
+}
+.logout-btn:hover{background:rgba(229,72,77,0.24) !important;border-color:var(--red) !important;color:#fff !important;}
 
 .current-week-badge{
   font-family:var(--mono);font-size:10.5px;letter-spacing:0.03em;
@@ -455,11 +447,24 @@ footer b{color:var(--info-blue);}
 /* ================= FILTER DROPDOWNS (redesign) ================= */
 .filterbar{
   background:var(--surface);border:1px solid var(--border);border-radius:10px;
-  padding:12px 16px;margin-bottom:20px;
-  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  padding:10px 16px;margin-bottom:20px;
   position:sticky;top:var(--topbar-h,64px);z-index:40;
   box-shadow:0 6px 14px -8px rgba(0,43,92,0.18);
 }
+.filterbar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.filterbar-toggle{
+  display:flex;align-items:center;gap:6px;background:transparent;border:none;cursor:pointer;
+  font-family:var(--disp);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-hi);
+  padding:4px 2px;
+}
+.filterbar-toggle .fbt-caret{font-size:11px;color:var(--navy);transition:transform .18s ease;}
+.filterbar.collapsed .filterbar-toggle .fbt-caret{transform:rotate(-90deg);}
+.filterbar-controls{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--border-soft);
+}
+.filterbar.collapsed .filterbar-controls{display:none;}
+.filterbar.collapsed .filterbar-head{margin:0;}
 .fdrop{position:relative;}
 .fdrop-btn{
   font-family:var(--body);font-size:12.5px;font-weight:500;color:var(--text-lo);
@@ -630,19 +635,36 @@ table.heatmap td:first-child{
 table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1F33;font-weight:600;}
 
 @media(max-width:640px){
-  .page{padding:16px;}
-  .topbar{padding:12px 16px;}
-  .kpi-value{font-size:26px;}
-  .gate-card{padding:28px 22px;}
+  .page{padding:12px;}
+  .topbar{padding:10px 14px;}
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .kpi-value{font-size:22px;}
+  .kpi-card{padding:12px 14px;}
+  .gate-card{padding:28px 20px;width:calc(100% - 8px);}
   .diff-stat-row{grid-template-columns:1fr;}
   .tab-btn{padding:7px 11px;font-size:12.5px;}
   .brand-text p{display:none;}
-  .updated{width:100%;justify-content:flex-start;flex-wrap:wrap;row-gap:6px;}
+  .updated{width:100%;justify-content:flex-start;flex-wrap:wrap;row-gap:8px;}
+  .updated-group{flex-wrap:wrap;row-gap:6px;}
+  .updated-divider{display:none;}
   .edit-form{grid-template-columns:1fr;}
+  .diff-modal, .edit-modal, .export-modal{max-width:calc(100% - 8px);padding:20px 16px;max-height:88vh;}
+  .export-choice-row{grid-template-columns:1fr;}
+  .panel{padding:16px 14px;}
+  .panel-title{font-size:16px;}
+  .chart-wrap{padding:10px 6px 4px;}
+  .milestone-node{min-width:110px;padding:0 8px;}
+  .panels-groups{gap:16px;}
+  .search-input{width:100%;}
+  .filterbar-controls{gap:8px;}
+  .fdrop-panel{max-width:calc(100vw - 40px);}
+  .bulk-bar{flex-wrap:wrap;}
 }
 @media(max-width:420px){
   .tab-btn{padding:6px 8px;font-size:11px;}
   .brand-text h1{font-size:16px;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .aging-bands{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -687,12 +709,20 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
     <button class="tab-btn" data-view="curva">Curva Rundown</button>
   </div>
   <div class="updated">
-    <span class="role-badge" id="role-badge" title="Clique para trocar de perfil"><span class="rb-dot"></span><span id="role-badge-label">Visualização</span></span>
-    DATA-BASE:
-    <input type="date" id="database-input" class="database-input" value="2026-07-24">
-    <span class="current-week-badge" id="current-week-badge" title="Semana corrente, com base na data-base"></span>
-    <button class="docs-link-btn tab-btn" data-view="docs" title="Documentação">📖 Docs</button>
-    <button class="docs-link-btn" id="global-export-btn" title="Exportar PDF/PNG">⭳ Exportar</button>
+    <div class="updated-group">
+      <span class="updated-field"><span class="uf-label">Data-base</span><input type="date" id="database-input" class="database-input" value="2026-07-24"></span>
+      <span class="current-week-badge" id="current-week-badge" title="Semana corrente, com base na data-base"></span>
+    </div>
+    <span class="updated-divider"></span>
+    <div class="updated-group">
+      <button class="docs-link-btn tab-btn" data-view="docs" title="Documentação">📖 Docs</button>
+      <button class="docs-link-btn" id="global-export-btn" title="Exportar PDF/PNG">⭳ Exportar</button>
+    </div>
+    <span class="updated-divider"></span>
+    <div class="updated-group session-group">
+      <span class="role-badge" id="role-badge" title="Clique para trocar de perfil"><span class="rb-dot"></span><span id="role-badge-label">Visualização</span></span>
+      <button class="docs-link-btn logout-btn" id="logout-btn" data-role-only="admin" title="Sair e desconectar do painel">⏻ Sair</button>
+    </div>
   </div>
 </div>
 
@@ -713,34 +743,41 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
 
   <!-- ============ SHARED FILTER BAR (dropdowns) ============ -->
   <div class="filterbar" id="filterbar">
-    <div class="fdrop" id="fdrop-class">
-      <button class="fdrop-btn" data-target="class">Classificação <span class="caret">▾</span></button>
-      <div class="fdrop-panel" id="fdrop-panel-class"></div>
+    <div class="filterbar-head" id="filterbar-head">
+      <button class="filterbar-toggle" id="filterbar-toggle"><span class="fbt-caret">▾</span> Filtros</button>
+      <div class="result-count"><b id="result-count">735</b> / <span id="result-total">735</span> itens</div>
     </div>
-    <div class="fdrop" id="fdrop-disc">
-      <button class="fdrop-btn" data-target="disc">Disciplina <span class="caret">▾</span></button>
-      <div class="fdrop-panel" id="fdrop-panel-disc"></div>
+    <div class="filterbar-controls" id="filterbar-controls">
+      <div class="fdrop" id="fdrop-class">
+        <button class="fdrop-btn" data-target="class">Classificação <span class="caret">▾</span></button>
+        <div class="fdrop-panel" id="fdrop-panel-class"></div>
+      </div>
+      <div class="fdrop" id="fdrop-disc">
+        <button class="fdrop-btn" data-target="disc">Disciplina <span class="caret">▾</span></button>
+        <div class="fdrop-panel" id="fdrop-panel-disc"></div>
+      </div>
+      <div class="fdrop" id="fdrop-status">
+        <button class="fdrop-btn" data-target="status">Status do prazo <span class="caret">▾</span></button>
+        <div class="fdrop-panel" id="fdrop-panel-status"></div>
+      </div>
+      <div class="fdrop" id="fdrop-semana">
+        <button class="fdrop-btn" data-target="semana">Semana <span class="caret">▾</span></button>
+        <div class="fdrop-panel" id="fdrop-panel-semana"></div>
+      </div>
+      <div class="fdrop" id="fdrop-responsavel">
+        <button class="fdrop-btn" data-target="responsavel">Responsável <span class="caret">▾</span></button>
+        <div class="fdrop-panel" id="fdrop-panel-responsavel"></div>
+      </div>
+      <button class="fdrop-btn" id="today-filter-btn" title="Mostrar somente o que está previsto para a data-base">📅 Programação hoje</button>
+      <button class="fdrop-btn" id="week-filter-btn" title="Mostrar tudo o que está previsto na semana da data-base">🗓 Programação semana</button>
+      <select id="sel-local"><option value="all">Todos os locais</option></select>
+      <input class="search-input" id="search-input" type="text" placeholder="Buscar descrição, local...">
+      <button class="reset-btn" id="reset-btn">✕ Limpar filtros</button>
+      <div class="fdrop" id="fdrop-cols">
+        <button class="gear-btn" id="gear-btn" title="Personalizar colunas da tabela">⚙</button>
+        <div class="fdrop-panel" id="fdrop-panel-cols" style="right:0;left:auto;"></div>
+      </div>
     </div>
-    <div class="fdrop" id="fdrop-status">
-      <button class="fdrop-btn" data-target="status">Status do prazo <span class="caret">▾</span></button>
-      <div class="fdrop-panel" id="fdrop-panel-status"></div>
-    </div>
-    <div class="fdrop" id="fdrop-semana">
-      <button class="fdrop-btn" data-target="semana">Semana <span class="caret">▾</span></button>
-      <div class="fdrop-panel" id="fdrop-panel-semana"></div>
-    </div>
-    <div class="fdrop" id="fdrop-responsavel">
-      <button class="fdrop-btn" data-target="responsavel">Responsável <span class="caret">▾</span></button>
-      <div class="fdrop-panel" id="fdrop-panel-responsavel"></div>
-    </div>
-    <select id="sel-local"><option value="all">Todos os locais</option></select>
-    <input class="search-input" id="search-input" type="text" placeholder="Buscar descrição, local...">
-    <button class="reset-btn" id="reset-btn">✕ Limpar filtros</button>
-    <div class="fdrop" id="fdrop-cols">
-      <button class="gear-btn" id="gear-btn" title="Personalizar colunas da tabela">⚙</button>
-      <div class="fdrop-panel" id="fdrop-panel-cols" style="right:0;left:auto;"></div>
-    </div>
-    <div class="result-count"><b id="result-count">735</b> / <span id="result-total">735</span> itens</div>
   </div>
 
   <!-- ============ VIEW: CURVA RUNDOWN ============ -->
@@ -814,17 +851,6 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
       </div>
     </div>
 
-    <div class="panels-settings-collapsed block" id="disc-resp-collapsed" data-role-only="admin">
-      <button class="panels-settings-toggle" id="disc-resp-toggle">
-        <span>👤 Responsável por Disciplina</span>
-        <span class="pst-caret">▾</span>
-      </button>
-      <div class="panels-settings-body" id="disc-resp-body">
-        <p class="panel-note" style="margin-top:14px;">Defina um responsável padrão por disciplina e aplique de uma vez a todos os itens dessa disciplina carregados no momento.</p>
-        <div id="disc-resp-list"></div>
-      </div>
-    </div>
-
     <div class="dash-charts-wrap layout-grid" id="dash-charts-wrap">
       <div class="panel" data-panel="disc">
         <div class="panel-head">
@@ -845,7 +871,7 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
           </div>
         </div>
         <div style="margin-bottom:10px;"><select id="week-disc-filter" style="min-width:160px;"><option value="all">Todas as disciplinas</option></select></div>
-        <p class="panel-note">Barras comparam <b>Previsto</b> (término planejado nesta semana) x <b>Real</b> (baixas efetivamente registradas nesta semana), por disciplina.</p>
+        <p class="panel-note">Barras comparam <b>Previsto</b> (término planejado nesta semana) x <b>Real</b> (baixas efetivamente registradas nesta semana), por disciplina. A tabela abaixo também inclui itens de semanas anteriores que não foram concluídos — marcados como "↻ Reprogramado".</p>
         <div class="chart-wrap"><canvas id="chart-week" height="200"></canvas></div>
         <div class="table-scroll" style="max-height:320px;margin-top:14px;">
           <table class="items" id="table-week">
@@ -1751,13 +1777,15 @@ const SAMPLE_MILESTONES = RAW.milestones || [];
 let dataLabel = 'carregando do banco de dados…';
 let dbConnected = false;
 
-const ALL_COLUMN_KEYS = ['item','classificacao','local','disciplina','termino_sort','semana_prevista','termino_real_date','qtd'];
+const ALL_COLUMN_KEYS = ['item','classificacao','local','disciplina','termino_sort','programacao_dia','semana_prevista','termino_real_date','qtd'];
 const state = {
   classificacoes: new Set(),   // EMPTY = sem restrição (mostra tudo) — lógica inversa
   disciplinas: new Set(),
   status: new Set(),
   semanas: new Set(),
   responsaveis: new Set(),
+  onlyToday: false,
+  onlyThisWeek: false,
   local: 'all',
   search: '',
   sortKey: 'termino_sort',
@@ -1820,6 +1848,12 @@ function matches(it){
   if(state.status.size && !state.status.has(it.status)) return false;
   if(state.semanas.size && !state.semanas.has(it.semana_key)) return false;
   if(state.responsaveis.size && !state.responsaveis.has(it.responsavel)) return false;
+  if(state.onlyToday && it.termino_date !== state.today) return false;
+  if(state.onlyThisWeek){
+    if(!it.termino_date) return false;
+    const {start, end} = getWeekWindow(state.today);
+    if(it.termino_date < start || it.termino_date > end) return false;
+  }
   if(state.local !== 'all' && it.local !== state.local) return false;
   if(state.search){
     const s = state.search.toLowerCase();
@@ -1838,6 +1872,7 @@ const COLUMN_DEFS = [
   {key:'local', label:'Local'},
   {key:'disciplina', label:'Disciplina'},
   {key:'termino_sort', label:'Previsão Término'},
+  {key:'programacao_dia', label:'Dia da Semana'},
   {key:'semana_prevista', label:'Semana'},
   {key:'termino_real_date', label:'Baixa (Data Real)'},
   {key:'qtd', label:'QTD'},
@@ -1947,60 +1982,6 @@ if(settingsToggleBtn){
     document.getElementById('panels-settings-collapsed').classList.toggle('open');
   });
 }
-const discRespToggleBtn = document.getElementById('disc-resp-toggle');
-if(discRespToggleBtn){
-  discRespToggleBtn.addEventListener('click', ()=>{
-    document.getElementById('disc-resp-collapsed').classList.toggle('open');
-    buildDiscRespList();
-  });
-}
-
-function mostCommonResponsavel(disciplina){
-  const counts = {};
-  ITEMS.filter(i=>i.disciplina===disciplina && i.responsavel && i.responsavel!=='Não atribuído')
-    .forEach(i=>{ counts[i.responsavel] = (counts[i.responsavel]||0)+1; });
-  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-  return entries.length ? entries[0][0] : '';
-}
-
-function buildDiscRespList(){
-  const wrap = document.getElementById('disc-resp-list');
-  if(!wrap) return;
-  wrap.innerHTML = SUM.disciplinas.map(d=>{
-    const count = SUM.disc_counts[d] || 0;
-    const suggestion = mostCommonResponsavel(d);
-    return `<div class="disc-resp-row" data-disc="${d}">
-      <span class="drr-name"><span class="disc-dot" style="background:${DISC_COLORS[d]||'#8296A6'}"></span>${d} <span style="color:var(--text-dim);font-family:var(--mono);font-size:11px;">(${count})</span></span>
-      <input type="text" class="drr-input" list="dl-responsaveis" placeholder="Nome do responsável" value="${suggestion}">
-      <button class="drr-apply" data-disc-apply="${d}">Aplicar a ${count} itens</button>
-    </div>`;
-  }).join('');
-  wrap.querySelectorAll('.drr-apply').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const disc = btn.dataset.discApply;
-      const input = wrap.querySelector(`.disc-resp-row[data-disc="${CSS.escape(disc)}"] .drr-input`);
-      const val = input.value.trim();
-      if(!val){ alert('Digite o nome do responsável antes de aplicar.'); return; }
-      const orig = btn.textContent;
-      btn.textContent = 'Aplicando...'; btn.disabled = true;
-      try{
-        const affected = ITEMS.filter(i=>i.disciplina===disc);
-        affected.forEach(i=> i.responsavel = val);
-        if(dbConnected) await chunkedUpsert('pendencias', affected.map(itemToDbRow));
-        SUM = computeSummary(ITEMS, state.today);
-        buildChips();
-        renderAll();
-        buildDiscRespList();
-        alert(`"${val}" foi definido como responsável em ${affected.length} itens da disciplina ${disc}.`);
-      } catch(err){
-        console.error(err);
-        alert('Não foi possível salvar no banco de dados.');
-      } finally {
-        btn.textContent = orig; btn.disabled = false;
-      }
-    });
-  });
-}
 
 // ===================================================================
 // AÇÕES EM MASSA (engrenagem mãe — seleção múltipla, Administrador)
@@ -2104,6 +2085,7 @@ function buildPanelVisibilityControl(){
       const key = e.target.dataset.panelKey;
       if(e.target.checked) state.visiblePanels.add(key); else state.visiblePanels.delete(key);
       applyPanelVisibility();
+      savePanelVisibilityConfig();
     });
   });
 }
@@ -2114,11 +2096,46 @@ function applyPanelVisibility(){
   });
 }
 
+const ALL_PANEL_KEYS = ['disc','week','summary','spi','aging','milestones','heatmap'];
+async function fetchPanelVisibilityConfig(){
+  if(!dbConnected) return;
+  try{
+    const {data, error} = await sb.from('configuracoes').select('valor').eq('chave', 'paineis_visiveis').maybeSingle();
+    if(error) throw error;
+    if(data && Array.isArray(data.valor)){
+      state.visiblePanels = new Set(data.valor.filter(k => ALL_PANEL_KEYS.includes(k)));
+    }
+  } catch(err){
+    console.warn('Não foi possível carregar a configuração de painéis visíveis do banco (usando padrão):', err);
+  }
+}
+async function savePanelVisibilityConfig(){
+  if(!dbConnected) return;
+  try{
+    const {error} = await sb.from('configuracoes').upsert({chave:'paineis_visiveis', valor: Array.from(state.visiblePanels)});
+    if(error) throw error;
+  } catch(err){
+    console.error('Não foi possível salvar a configuração de painéis visíveis no banco:', err);
+  }
+}
+function setupPanelVisibilityRealtime(){
+  sb.channel('configuracoes-rt')
+    .on('postgres_changes', {event:'*', schema:'public', table:'configuracoes', filter:'chave=eq.paineis_visiveis'}, payload => {
+      if(payload.new && Array.isArray(payload.new.valor)){
+        state.visiblePanels = new Set(payload.new.valor.filter(k => ALL_PANEL_KEYS.includes(k)));
+        applyPanelVisibility();
+        buildPanelVisibilityControl();
+      }
+    })
+    .subscribe();
+}
+
 // abre/fecha os popovers de filtro e coluna (um por vez, fecha ao clicar fora)
 document.querySelectorAll('.fdrop-btn, .gear-btn').forEach(btn=>{
   btn.addEventListener('click', (e)=>{
-    e.stopPropagation();
     const wrap = btn.closest('.fdrop');
+    if(!wrap) return; // botão de estilo .fdrop-btn sem popover associado (ex: toggle "somente hoje")
+    e.stopPropagation();
     const wasOpen = wrap.classList.contains('open');
     document.querySelectorAll('.fdrop.open').forEach(f=>f.classList.remove('open'));
     if(!wasOpen) wrap.classList.add('open');
@@ -2138,6 +2155,10 @@ function resetFilters(){
   state.status.clear();
   state.semanas.clear();
   state.responsaveis.clear();
+  state.onlyToday = false;
+  document.getElementById('today-filter-btn').classList.remove('has-filter');
+  state.onlyThisWeek = false;
+  document.getElementById('week-filter-btn').classList.remove('has-filter');
   state.local = 'all';
   state.search = '';
   summaryActiveDisc = null;
@@ -2152,10 +2173,13 @@ function resetFilters(){
 
 function updateCurrentWeekBadge(){
   const badge = document.getElementById('current-week-badge');
-  if(!badge) return;
-  const {start, end} = getWeekWindow(state.today);
   const code = weekLabel(mondayOf(state.today));
-  badge.textContent = `SEMANA ${code} · ${fmtDateShort(start)} A ${fmtDateShort(end)}`;
+  if(badge){
+    const {start, end} = getWeekWindow(state.today);
+    badge.textContent = `SEMANA ${code} · ${fmtDateShort(start)} A ${fmtDateShort(end)}`;
+  }
+  const weekBtn = document.getElementById('week-filter-btn');
+  if(weekBtn) weekBtn.textContent = `🗓 Programação Sem. ${code}`;
 }
 
 function wireStaticControls(){
@@ -2164,6 +2188,16 @@ function wireStaticControls(){
   document.getElementById('reset-btn').addEventListener('click', ()=>{ resetFilters(); renderAll(); });
   document.getElementById('database-input').addEventListener('change', e=>{
     if(e.target.value){ state.today = e.target.value; SUM = computeSummary(ITEMS, state.today); renderAll(); updateCurrentWeekBadge(); }
+  });
+  document.getElementById('today-filter-btn').addEventListener('click', e=>{
+    state.onlyToday = !state.onlyToday;
+    e.currentTarget.classList.toggle('has-filter', state.onlyToday);
+    renderAll();
+  });
+  document.getElementById('week-filter-btn').addEventListener('click', e=>{
+    state.onlyThisWeek = !state.onlyThisWeek;
+    e.currentTarget.classList.toggle('has-filter', state.onlyThisWeek);
+    renderAll();
   });
 }
 
@@ -2218,6 +2252,13 @@ function renderKPIs(list){
 // ===================================================================
 let curveChart, curveChartExpanded;
 const MONTH_ABBR_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const WEEKDAY_PT = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+function weekdayLabel(iso){
+  if(!iso) return null;
+  const [y,m,d] = iso.split('-').map(Number);
+  const dow = new Date(Date.UTC(y,m-1,d)).getUTCDay();
+  return WEEKDAY_PT[dow];
+}
 
 function fmtDateShort(iso){
   if(!iso) return '—';
@@ -2600,7 +2641,9 @@ function renderWeekChart(list){
   const weekCode = weekLabel(mondayOf(state.today));
   if(label) label.textContent = `${weekCode} · ${fmtDateShort(start)} a ${fmtDateShort(end)}`;
 
-  const allWeekItems = list.filter(it=> it.termino_date && it.termino_date >= start && it.termino_date <= end && it.status !== 'concluido');
+  // tabela: inclui o que vence nesta semana + o que já venceu antes e ainda não foi concluído
+  // (reprogramado automaticamente para a semana corrente, sem sumir da programação)
+  const allWeekItems = list.filter(it=> it.termino_date && it.termino_date <= end && it.status !== 'concluido');
   const discsPresent = Array.from(new Set(allWeekItems.map(it=>it.disciplina))).sort();
   buildWeekDiscFilter(discsPresent);
 
@@ -2628,14 +2671,20 @@ function renderWeekChart(list){
   if(sortedWeekItems.length === 0){
     tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Nenhuma atividade prevista para esta semana ${discFilter!=='all' ? 'nesta disciplina' : ''}.</td></tr>`;
   } else {
-    tbody.innerHTML = sortedWeekItems.map(i=>`
+    tbody.innerHTML = sortedWeekItems.map(i=>{
+      const isCarried = i.termino_date < start;
+      const badge = isCarried
+        ? `<span class="badge badge-vencido" style="margin-left:8px;" title="Não foi concluído na semana original — reprogramado automaticamente"><span class="badge-dot"></span>↻ Reprogramado</span>`
+        : '';
+      return `
       <tr>
         <td class="num">${i.item ?? '—'}</td>
         <td><span class="disc-dot" style="background:${DISC_COLORS[i.disciplina]||'#8296A6'}"></span>${i.disciplina}</td>
         <td>${i.local}</td>
-        <td class="desc">${i.descricao}</td>
+        <td class="desc">${i.descricao}${badge}</td>
         <td class="num">${fmtDate(i.termino_date)}</td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
   }
 }
 
@@ -2700,6 +2749,7 @@ const CELL_RENDERERS = {
   local: i => `<td>${i.local}</td>`,
   disciplina: i => `<td><span class="disc-dot" style="background:${DISC_COLORS[i.disciplina]||'#8296A6'}"></span>${i.disciplina}</td>`,
   termino_sort: i => `<td class="num">${i.termino_date ? fmtDate(i.termino_date) : (i.termino_raw || '—')}</td>`,
+  programacao_dia: i => `<td class="num">${i.termino_date ? weekdayLabel(i.termino_date) : '—'}</td>`,
   semana_prevista: i => `<td class="num">${i.termino_date ? weekLabel(mondayOf(i.termino_date)) : '—'}</td>`,
   termino_real_date: i => `<td class="num">${i.termino_real_date ? fmtDate(i.termino_real_date) : '—'}</td>`,
   qtd: i => `<td class="num">${i.qtd != null ? i.qtd + (i.und?(' '+i.und):'') : '—'}</td>`,
@@ -3435,6 +3485,11 @@ document.getElementById('role-badge').addEventListener('click', async ()=>{
   }
   document.getElementById('gate').classList.remove('hidden');
 });
+document.getElementById('logout-btn').addEventListener('click', async ()=>{
+  try{ await sb.auth.signOut(); } catch(e){ console.warn(e); }
+  applyRole('viewer');
+  document.getElementById('gate').classList.remove('hidden');
+});
 
 // ===================================================================
 // EXPORTAR PNG / PDF (snapshot do painel — 100% local, via html2canvas)
@@ -3705,6 +3760,22 @@ function syncTopbarHeight(){
   if(topbar) document.documentElement.style.setProperty('--topbar-h', topbar.offsetHeight + 'px');
 }
 
+let filterbarUserToggled = false;
+function setFilterbarCollapsed(collapsed){
+  document.getElementById('filterbar').classList.toggle('collapsed', collapsed);
+  syncTopbarHeight();
+}
+document.getElementById('filterbar-toggle').addEventListener('click', ()=>{
+  filterbarUserToggled = true;
+  const fb = document.getElementById('filterbar');
+  setFilterbarCollapsed(!fb.classList.contains('collapsed'));
+});
+function applyDefaultFilterbarState(){
+  if(filterbarUserToggled) return; // não sobrescreve escolha manual do usuário
+  setFilterbarCollapsed(window.innerWidth <= 640);
+}
+window.addEventListener('resize', applyDefaultFilterbarState);
+
 async function fetchFromSupabase(){
   const [pendRes, marcRes] = await Promise.all([
     sb.from('pendencias').select('*'),
@@ -3786,7 +3857,11 @@ async function bootstrap(){
       dataLabel = 'dados ao vivo do banco (Supabase)';
       setDataSourceStatus('ok', '🟢 Conectado — tempo real ativo');
     }
+    await fetchPanelVisibilityConfig();
+    applyPanelVisibility();
+    buildPanelVisibilityControl();
     setupRealtime();
+    setupPanelVisibilityRealtime();
   } catch(err){
     console.error('Falha ao conectar ao Supabase — usando dados de exemplo offline:', err);
     dbConnected = false;
@@ -3801,6 +3876,7 @@ async function bootstrap(){
   document.getElementById('datasource-sub').innerHTML = `Exibindo ${dataLabel} · Total: <b id="ds-count">${SUM.total}</b> itens`;
   renderAll();
   updateCurrentWeekBadge();
+  applyDefaultFilterbarState();
 }
 
 bootstrap();
