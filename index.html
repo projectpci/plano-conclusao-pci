@@ -54,7 +54,7 @@
   --body:'Inter', sans-serif;
 }
 *{box-sizing:border-box;}
-html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%;}
+html,body{margin:0;padding:0;}
 body{
   background:
     radial-gradient(ellipse 1300px 650px at 12% -12%, rgba(0,43,92,0.06), transparent 60%),
@@ -149,6 +149,23 @@ body{
   font-size:18px;
 }
 .datasource-text{flex:1;min-width:220px;}
+
+.plano-toggle-bar{
+  background:linear-gradient(135deg, rgba(146,208,80,0.08), var(--surface));
+  border:1px solid var(--border);border-left:3px solid var(--green);border-radius:10px;
+  padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.plano-toggle-text .pt-title{font-family:var(--disp);font-weight:700;font-size:14.5px;color:var(--text-hi);text-transform:uppercase;}
+.plano-toggle-text .pt-sub{font-size:12px;color:var(--text-lo);margin-top:2px;}
+.pt-switch-lg{position:relative;width:46px;height:26px;flex-shrink:0;cursor:pointer;}
+.pt-switch-lg input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
+.pt-slider-lg{position:absolute;inset:0;background:var(--border);border-radius:26px;transition:background .18s ease;}
+.pt-slider-lg::before{
+  content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;
+  transition:transform .18s ease;box-shadow:0 1px 3px rgba(0,0,0,0.3);
+}
+.pt-switch-lg input:checked ~ .pt-slider-lg{background:var(--green);}
+.pt-switch-lg input:checked ~ .pt-slider-lg::before{transform:translateX(20px);}
 .datasource-text .dt-title{font-family:var(--disp);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:0.02em;color:var(--text-hi);}
 .datasource-text .dt-sub{font-size:11.5px;color:var(--text-lo);margin-top:2px;line-height:1.5;}
 .datasource-text .dt-sub b{color:var(--info-blue);}
@@ -338,6 +355,16 @@ select:focus, .search-input:focus{border-color:var(--info-blue);}
 .dash-charts-wrap > .panel{min-width:0;}
 @media(max-width:1000px){.dash-charts-wrap.layout-grid{grid-template-columns:1fr;}}
 
+/* ================= REORDENAR PAINÉIS (arrastar) ================= */
+.reorder-block{transition:opacity .15s ease, transform .15s ease;}
+.reorder-block.rb-dragging{opacity:0.35;}
+.reorder-block.rb-drag-over{outline:2px dashed var(--navy);outline-offset:4px;border-radius:12px;}
+.reorder-handle{
+  display:none;cursor:grab;color:var(--text-dim);font-size:15px;margin-right:8px;vertical-align:-1px;
+}
+body.role-admin .reorder-handle{display:inline-block;}
+.reorder-handle:active{cursor:grabbing;}
+
 /* ---------- legend chips ---------- */
 .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-lo);}
@@ -388,6 +415,7 @@ table.items td.num{font-family:var(--mono);text-align:right;}
 .badge-a_vencer{background:rgba(146,208,80,0.12);color:var(--green);}
 .badge-sem_data{background:rgba(140,160,184,0.12);color:var(--text-lo);}
 .badge-concluido{background:rgba(46,123,196,0.14);color:var(--info-blue);}
+.badge-novo{background:rgba(146,208,80,0.18);color:#3E7A15;border:1px solid rgba(146,208,80,0.4);}
 .badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
 .class-tag{font-family:var(--mono);font-size:10.5px;color:var(--text-dim);}
 
@@ -496,6 +524,14 @@ body.role-viewer .role-badge .rb-dot{background:rgba(255,255,255,0.4);}
   position:sticky;top:var(--topbar-h,64px);z-index:40;
   box-shadow:0 6px 14px -8px rgba(0,43,92,0.18);
 }
+.filterbar.unpinned{position:static;box-shadow:none;}
+.filterbar-pin-btn{
+  font-family:var(--mono);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;
+  background:var(--surface-2);border:1px solid var(--border);color:var(--text-dim);
+  padding:5px 10px;border-radius:100px;cursor:pointer;white-space:nowrap;transition:all .15s ease;
+}
+.filterbar-pin-btn.active{background:rgba(0,43,92,0.08);border-color:var(--navy);color:var(--navy);}
+.filterbar-pin-btn:hover{border-color:var(--navy);}
 .filterbar-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .filterbar-toggle{
   display:flex;align-items:center;gap:6px;background:transparent;border:none;cursor:pointer;
@@ -841,11 +877,26 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
     <input type="file" id="file-input" accept=".xlsx,.xls">
   </div>
 
+  <!-- ============ SALVAR PLANO (marca itens novos daqui pra frente) ============ -->
+  <div class="plano-toggle-bar" data-role-only="admin">
+    <div class="plano-toggle-text">
+      <div class="pt-title">📌 Salvar Plano</div>
+      <div class="pt-sub" id="plano-toggle-sub">Desligado — nenhuma pendência está sendo marcada como nova.</div>
+    </div>
+    <label class="pt-switch-lg">
+      <input type="checkbox" id="plano-toggle-input">
+      <span class="pt-slider-lg"></span>
+    </label>
+  </div>
+
   <!-- ============ SHARED FILTER BAR (dropdowns) ============ -->
   <div class="filterbar" id="filterbar">
     <div class="filterbar-head" id="filterbar-head">
       <button class="filterbar-toggle" id="filterbar-toggle"><span class="fbt-caret">▾</span> Filtros</button>
-      <div class="result-count"><b id="result-count">735</b> / <span id="result-total">735</span> itens</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="filterbar-pin-btn active" id="filterbar-pin-btn" title="Fixar a barra de filtros no topo ao rolar a página">📌 Fixado</button>
+        <div class="result-count"><b id="result-count">735</b> / <span id="result-total">735</span> itens</div>
+      </div>
     </div>
     <div class="filterbar-controls" id="filterbar-controls">
       <div class="fdrop" id="fdrop-class">
@@ -907,7 +958,8 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
       <div class="legend">
         <div class="legend-item"><span class="legend-line" style="background:var(--navy)"></span> Remanescente planejado</div>
         <div class="legend-item" id="legend-real" style="display:none;"><span class="legend-line" style="background:#6FA834;border-top:2px dashed #6FA834;height:0"></span> Remanescente realizado (baixas)</div>
-        <div class="legend-item"><span class="legend-swatch" style="background:rgba(0,43,92,0.4)"></span> Itens com término previsto no período</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:rgba(0,43,92,0.4)"></span> Previsto no período</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:rgba(146,208,80,0.75)"></span> Real no período (baixas)</div>
         <div class="legend-item"><span class="legend-line" style="background:var(--red);border-top:2px dashed var(--red);height:0"></span> Data-base</div>
       </div>
     </div>
@@ -951,87 +1003,101 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
       </div>
     </div>
 
-    <div class="dash-charts-wrap layout-grid" id="dash-charts-wrap">
-      <div class="panel scroll-reveal" data-panel="disc">
-        <div class="panel-head">
-          <div class="panel-title">Pendências por Disciplina</div>
-          <button class="expand-btn generic-expand-btn" data-chart="disc">⤢ Expandir</button>
+    <div id="dashboard-blocks">
+      <div class="reorder-block" data-block="milestones" draggable="true">
+        <div class="panel scroll-reveal" data-panel="milestones">
+          <div class="panel-head"><div class="panel-title"><span class="reorder-handle" title="Arraste para reordenar">⠿</span>Marcos do Projeto (Milestone Tracker)</div></div>
+          <p class="panel-note">Fases principais identificadas na estrutura da planilha (linhas agregadoras de nível 2), com status conforme a data-base.</p>
+          <div id="milestone-timeline" class="milestone-timeline"></div>
         </div>
-        <p class="panel-note">Distribuição das pendências filtradas por disciplina, segmentada por classificação.</p>
-        <div class="chart-wrap"><canvas id="chart-disc" height="230"></canvas></div>
       </div>
 
-      <div class="panel scroll-reveal" data-panel="week">
-        <div class="panel-head">
-          <div class="panel-title">Programação da Semana por Disciplina</div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span class="week-range" id="week-range-label"></span>
-            <button class="expand-btn quick-export-btn" data-scope="week" title="Exportar esta programação">⭳</button>
-            <button class="expand-btn generic-expand-btn" data-chart="week">⤢ Expandir</button>
+      <div class="reorder-block" data-block="charts" draggable="true">
+        <div class="dash-charts-wrap layout-grid" id="dash-charts-wrap">
+          <div class="panel scroll-reveal" data-panel="disc">
+            <div class="panel-head">
+              <div class="panel-title"><span class="reorder-handle" title="Arraste para reordenar">⠿</span>Pendências por Disciplina</div>
+              <button class="expand-btn generic-expand-btn" data-chart="disc">⤢ Expandir</button>
+            </div>
+            <p class="panel-note">Distribuição das pendências filtradas por disciplina, segmentada por classificação.</p>
+            <div class="chart-wrap"><canvas id="chart-disc" height="230"></canvas></div>
+          </div>
+
+          <div class="panel scroll-reveal" data-panel="week">
+            <div class="panel-head">
+              <div class="panel-title">Programação da Semana por Disciplina</div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span class="week-range" id="week-range-label"></span>
+                <button class="expand-btn quick-export-btn" data-scope="week" title="Exportar esta programação">⭳</button>
+                <button class="expand-btn generic-expand-btn" data-chart="week">⤢ Expandir</button>
+              </div>
+            </div>
+            <div style="margin-bottom:10px;"><select id="week-disc-filter" style="min-width:160px;"><option value="all">Todas as disciplinas</option></select></div>
+            <p class="panel-note">Barras comparam <b>Previsto</b> (término planejado nesta semana) x <b>Real</b> (baixas efetivamente registradas nesta semana), por disciplina. A tabela abaixo também inclui itens de semanas anteriores que não foram concluídos — marcados como "↻ Reprogramado".</p>
+            <div class="chart-wrap"><canvas id="chart-week" height="200"></canvas></div>
+            <div class="table-scroll" style="max-height:320px;margin-top:14px;">
+              <table class="items" id="table-week">
+                <thead><tr><th>Item</th><th>Disciplina</th><th>Local</th><th>Descrição</th><th>Término previsto</th></tr></thead>
+                <tbody id="table-week-body"></tbody>
+              </table>
+            </div>
           </div>
         </div>
-        <div style="margin-bottom:10px;"><select id="week-disc-filter" style="min-width:160px;"><option value="all">Todas as disciplinas</option></select></div>
-        <p class="panel-note">Barras comparam <b>Previsto</b> (término planejado nesta semana) x <b>Real</b> (baixas efetivamente registradas nesta semana), por disciplina. A tabela abaixo também inclui itens de semanas anteriores que não foram concluídos — marcados como "↻ Reprogramado".</p>
-        <div class="chart-wrap"><canvas id="chart-week" height="200"></canvas></div>
-        <div class="table-scroll" style="max-height:320px;margin-top:14px;">
-          <table class="items" id="table-week">
-            <thead><tr><th>Item</th><th>Disciplina</th><th>Local</th><th>Descrição</th><th>Término previsto</th></tr></thead>
-            <tbody id="table-week-body"></tbody>
-          </table>
+      </div>
+
+      <div class="reorder-block" data-block="summary" draggable="true">
+        <div class="panel scroll-reveal" data-panel="summary">
+          <div class="panel-head"><div class="panel-title"><span class="reorder-handle" title="Arraste para reordenar">⠿</span>Resumo Disciplina × Classificação</div></div>
+          <p class="panel-note">Clique em uma linha para isolar a disciplina correspondente nos filtros.</p>
+          <div class="summary-table-wrap">
+            <table class="summary" id="summary-table">
+              <thead><tr id="summary-head"></tr></thead>
+              <tbody id="summary-body"></tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="panel scroll-reveal" data-panel="summary">
-      <div class="panel-head"><div class="panel-title">Resumo Disciplina × Classificação</div></div>
-      <p class="panel-note">Clique em uma linha para isolar a disciplina correspondente nos filtros.</p>
-      <div class="summary-table-wrap">
-        <table class="summary" id="summary-table">
-          <thead><tr id="summary-head"></tr></thead>
-          <tbody id="summary-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ============ KPIs AVANÇADOS ============ -->
-    <div class="panel scroll-reveal" data-panel="spi">
-      <div class="panel-head"><div class="panel-title">Desempenho de Prazo</div></div>
-      <p class="panel-note">Os velocímetros mostram o SPI (Realizado ÷ Previsto, acumulado até a data-base) e o % de conclusão geral do projeto: abaixo de 90% em vermelho, entre 90% e 100% em amarelo, 100% ou mais em verde.</p>
-      <div class="spi-gauges-row">
-        <div class="spi-gauge-box">
-          <div class="spi-gauge-canvas-wrap"><canvas id="chart-spi-gauge"></canvas></div>
-          <div class="gauge-caption">SPI de Prazo</div>
-        </div>
-        <div class="spi-gauge-box">
-          <div class="spi-gauge-canvas-wrap"><canvas id="chart-completion-gauge"></canvas></div>
-          <div class="gauge-caption">Conclusão Geral</div>
+      <!-- ============ KPIs AVANÇADOS ============ -->
+      <div class="reorder-block" data-block="spi" draggable="true">
+        <div class="panel scroll-reveal" data-panel="spi">
+          <div class="panel-head"><div class="panel-title"><span class="reorder-handle" title="Arraste para reordenar">⠿</span>Desempenho de Prazo</div></div>
+          <p class="panel-note">Os velocímetros mostram o SPI (Realizado ÷ Previsto, acumulado até a data-base) e o % de conclusão geral do projeto: abaixo de 90% em vermelho, entre 90% e 100% em amarelo, 100% ou mais em verde.</p>
+          <div class="spi-gauges-row">
+            <div class="spi-gauge-box">
+              <div class="spi-gauge-canvas-wrap"><canvas id="chart-spi-gauge"></canvas></div>
+              <div class="gauge-caption">SPI de Prazo</div>
+            </div>
+            <div class="spi-gauge-box">
+              <div class="spi-gauge-canvas-wrap"><canvas id="chart-completion-gauge"></canvas></div>
+              <div class="gauge-caption">Conclusão Geral</div>
+            </div>
+          </div>
+          <div class="kpi-row" id="kpi-row-advanced"></div>
         </div>
       </div>
-      <div class="kpi-row" id="kpi-row-advanced"></div>
-    </div>
 
-    <div class="panel scroll-reveal" data-panel="aging">
-      <div class="panel-head">
-        <div class="panel-title">Alerta de Pendências</div>
-        <div class="granularity-toggle" id="aging-mode-toggle">
-          <button class="gran-btn active" data-aging-mode="vencidas">Vencidas</button>
-          <button class="gran-btn" data-aging-mode="a_vencer">A vencer (próximos 7 dias)</button>
+      <div class="reorder-block" data-block="aging" draggable="true">
+        <div class="panel scroll-reveal" data-panel="aging">
+          <div class="panel-head">
+            <div class="panel-title"><span class="reorder-handle" title="Arraste para reordenar">⠿</span>Alerta de Pendências</div>
+            <div class="granularity-toggle" id="aging-mode-toggle">
+              <button class="gran-btn active" data-aging-mode="vencidas">Vencidas</button>
+              <button class="gran-btn" data-aging-mode="a_vencer">A vencer (próximos 7 dias)</button>
+            </div>
+          </div>
+          <p class="panel-note" id="aging-note">Quanto tempo cada item está em atraso, em relação à data-base. Priorize sempre a faixa mais escura primeiro.</p>
+          <div class="aging-bands" id="aging-bands"></div>
         </div>
       </div>
-      <p class="panel-note" id="aging-note">Quanto tempo cada item está em atraso, em relação à data-base. Priorize sempre a faixa mais escura primeiro.</p>
-      <div class="aging-bands" id="aging-bands"></div>
-    </div>
 
-    <div class="panel scroll-reveal" data-panel="milestones">
-      <div class="panel-head"><div class="panel-title">Marcos do Projeto (Milestone Tracker)</div></div>
-      <p class="panel-note">Fases principais identificadas na estrutura da planilha (linhas agregadoras de nível 2), com status conforme a data-base.</p>
-      <div id="milestone-timeline" class="milestone-timeline"></div>
-    </div>
-
-    <div class="panel scroll-reveal" data-panel="heatmap">
-      <div class="panel-head"><div class="panel-title">Heatmap — Carga Prevista por Disciplina x Semana</div></div>
-      <p class="panel-note">Quantidade de itens com término previsto em cada semana, por disciplina. Cores mais intensas = maior concentração de trabalho prevista naquele período.</p>
-      <div class="heatmap-scroll" id="heatmap-wrap"></div>
+      <div class="reorder-block" data-block="heatmap" draggable="true">
+        <div class="panel scroll-reveal" data-panel="heatmap">
+          <div class="panel-head"><div class="panel-title"><span class="reorder-handle" title="Arraste para reordenar">⠿</span>Heatmap — Carga Prevista por Disciplina x Semana</div></div>
+          <p class="panel-note">Quantidade de itens com término previsto em cada semana, por disciplina. Cores mais intensas = maior concentração de trabalho prevista naquele período.</p>
+          <div class="heatmap-scroll" id="heatmap-wrap"></div>
+        </div>
+      </div>
     </div>
 
     <div class="panel scroll-reveal" id="panel-items-table">
@@ -1110,7 +1176,8 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
         <div class="doc-def"><b>Linha vermelha tracejada</b>: marca a data-base no eixo X.</div>
         <div class="doc-def"><b>Alternador Dia/Semana</b>: no modo semana, os itens são agrupados pela segunda-feira da semana correspondente; o rótulo <code>S03-Jul</code> significa a 3ª segunda-feira contada dentro do mês de julho. O alternador também existe dentro do modo Expandido, sincronizado com o de fora.</div>
         <div class="doc-def"><b>Seletor de intervalo de datas:</b> recorta quais pontos do eixo aparecem (útil para olhar só uma semana específica, por exemplo). Os valores de remanescente continuam calculados sobre a base completa do projeto, só a janela visível muda.</div>
-        <div class="doc-def"><b>Botão Expandir</b>: reabre o mesmo gráfico em tela cheia, respeitando os filtros ativos no momento.</div>
+        <div class="doc-def"><b>Barras</b>: navy = itens com Previsão Término caindo naquele dia/semana do eixo (Previsto). Verde = itens com Data Real (baixa) caindo naquele mesmo período (Real) — aparece só quando a planilha tem baixas registradas.</div>
+        <div class="doc-def"><b>Botão Expandir</b>: reabre o mesmo gráfico em tela cheia, respeitando os filtros ativos no momento, com a legenda completa sempre visível abaixo do gráfico.</div>
       </div>
     </div>
 
@@ -1194,6 +1261,7 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
         <div class="doc-def"><b>Ações em massa (engrenagem mãe):</b> marque várias pendências pelas caixinhas de seleção e use o botão "⚙ Ações em massa" para alterar Responsável, Disciplina, Classificação ou Status de todas de uma vez.</div>
         <div class="doc-def"><b>Histórico de Anotações:</b> dentro do modal de edição de cada item, um mural de comentários datados (autor + data/hora) — diferente do campo único "Observação" da planilha, aqui o histórico fica acumulado, sem apagar anotações antigas.</div>
         <div class="doc-def"><b>＋ Novo item:</b> cadastro manual de uma pendência que não veio da planilha (fica salva no banco, junto com as demais).</div>
+        <div class="doc-def"><b>📌 Salvar Plano:</b> interruptor no painel de fonte de dados (Administrador). Ao ligar, tudo que for cadastrado a partir daquele momento — por upload de planilha ou manualmente — ganha o selo "🆕 Novo" na Lista de Pendências, até você desligar. Serve para sinalizar o que surgiu depois que o plano foi consolidado/aprovado.</div>
       </div>
     </div>
 
@@ -1261,7 +1329,14 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
     </div>
   </div>
   <div class="curve-overlay-body">
-    <div class="chart-wrap" style="height:100%;"><canvas id="chart-curve-expanded"></canvas></div>
+    <div class="chart-wrap" style="height:calc(100% - 40px);"><canvas id="chart-curve-expanded"></canvas></div>
+    <div class="legend" id="legend-expanded" style="justify-content:center;margin-top:6px;">
+      <div class="legend-item"><span class="legend-line" style="background:var(--navy)"></span> Remanescente planejado</div>
+      <div class="legend-item" id="legend-real-expanded" style="display:none;"><span class="legend-line" style="background:#6FA834;border-top:2px dashed #6FA834;height:0"></span> Remanescente realizado (baixas)</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:rgba(0,43,92,0.4)"></span> Previsto no período</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:rgba(146,208,80,0.75)"></span> Real no período (baixas)</div>
+      <div class="legend-item"><span class="legend-line" style="background:var(--red);border-top:2px dashed var(--red);height:0"></span> Data-base</div>
+    </div>
   </div>
 </div>
 
@@ -1886,6 +1961,7 @@ function dbRowToItem(row){
     und: row.und || null,
     obs: row.obs || '',
     responsavel: row.responsavel || '',
+    criado_em: row.criado_em || null,
   };
 }
 function itemToDbRow(it){
@@ -2021,6 +2097,14 @@ function computeStatus(it, today){
   if(it.termino_real_date) return 'concluido';
   if(!it.termino_date) return 'sem_data';
   return it.termino_date < today ? 'vencido' : 'a_vencer';
+}
+
+// "Novo" = cadastrado depois que o Administrador acionou "Salvar Plano" (marca um
+// carimbo de data/hora no banco). Enquanto o plano não for salvo, nada é marcado.
+state.planoAprovadoEm = null;
+function isItemNovo(it){
+  if(!state.planoAprovadoEm || !it.criado_em) return false;
+  return new Date(it.criado_em).getTime() > new Date(state.planoAprovadoEm).getTime();
 }
 
 function computeSummary(items, today){
@@ -2441,6 +2525,39 @@ function saveDataBaseConfig(){
   saveConfig('data_base', state.today);
 }
 
+function updatePlanoToggleUI(){
+  const input = document.getElementById('plano-toggle-input');
+  const sub = document.getElementById('plano-toggle-sub');
+  if(!input || !sub) return;
+  input.checked = !!state.planoAprovadoEm;
+  sub.textContent = state.planoAprovadoEm
+    ? `Ligado desde ${new Date(state.planoAprovadoEm).toLocaleString('pt-BR')} — tudo cadastrado depois disso aparece com o selo "🆕 Novo".`
+    : 'Desligado — nenhuma pendência está sendo marcada como nova.';
+}
+async function fetchPlanoConfig(){
+  const valor = await fetchConfig('plano_aprovado_em');
+  if(valor) state.planoAprovadoEm = valor;
+  updatePlanoToggleUI();
+}
+function wirePlanoToggle(){
+  const input = document.getElementById('plano-toggle-input');
+  if(!input) return;
+  input.addEventListener('change', e=>{
+    if(e.target.checked){
+      const ok = confirm('A partir de agora, toda pendência cadastrada (upload de planilha ou cadastro manual) vai aparecer com o selo "🆕 Novo" até você desligar essa opção. Continuar?');
+      if(!ok){ e.target.checked = false; return; }
+      state.planoAprovadoEm = new Date().toISOString();
+    } else {
+      const ok = confirm('Isso vai desligar o selo "🆕 Novo" — pendências deixarão de ser marcadas como novas. Continuar?');
+      if(!ok){ e.target.checked = true; return; }
+      state.planoAprovadoEm = null;
+    }
+    saveConfig('plano_aprovado_em', state.planoAprovadoEm);
+    updatePlanoToggleUI();
+    renderItemsTable(filtered());
+  });
+}
+
 async function fetchColumnsConfig(){
   const valor = await fetchConfig('colunas_config');
   if(valor && typeof valor === 'object'){
@@ -2459,6 +2576,62 @@ async function fetchColumnsConfig(){
 }
 function saveColumnsConfig(){
   saveConfig('colunas_config', {ordem: state.columnOrder, visiveis: Array.from(state.visibleColumns)});
+}
+
+// ---- reorganizar painéis do Dashboard (arrastar) ----
+const DEFAULT_PANEL_ORDER = ['milestones','charts','summary','spi','aging','heatmap'];
+function applyPanelOrder(order){
+  const container = document.getElementById('dashboard-blocks');
+  if(!container) return;
+  order.forEach(key=>{
+    const el = container.querySelector(`.reorder-block[data-block="${key}"]`);
+    if(el) container.appendChild(el);
+  });
+}
+async function fetchPanelOrderConfig(){
+  const valor = await fetchConfig('paineis_ordem');
+  if(Array.isArray(valor) && valor.length){
+    const validKeys = DEFAULT_PANEL_ORDER;
+    const cleaned = valor.filter(k => validKeys.includes(k));
+    validKeys.forEach(k => { if(!cleaned.includes(k)) cleaned.push(k); });
+    applyPanelOrder(cleaned);
+  }
+}
+function savePanelOrderConfig(){
+  const order = [...document.querySelectorAll('#dashboard-blocks .reorder-block')].map(el=>el.dataset.block);
+  saveConfig('paineis_ordem', order);
+}
+let panelDragKey = null;
+function setupPanelReorder(){
+  const container = document.getElementById('dashboard-blocks');
+  if(!container) return;
+  container.querySelectorAll('.reorder-block').forEach(block=>{
+    block.addEventListener('dragstart', e=>{
+      if(state.role !== 'admin'){ e.preventDefault(); return; }
+      panelDragKey = block.dataset.block;
+      block.classList.add('rb-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    block.addEventListener('dragend', ()=> block.classList.remove('rb-dragging'));
+    block.addEventListener('dragover', e=>{
+      if(state.role !== 'admin' || !panelDragKey) return;
+      e.preventDefault();
+      block.classList.add('rb-drag-over');
+    });
+    block.addEventListener('dragleave', ()=> block.classList.remove('rb-drag-over'));
+    block.addEventListener('drop', e=>{
+      e.preventDefault();
+      block.classList.remove('rb-drag-over');
+      if(!panelDragKey || panelDragKey === block.dataset.block) return;
+      const draggedEl = container.querySelector(`.reorder-block[data-block="${panelDragKey}"]`);
+      if(!draggedEl) return;
+      const rect = block.getBoundingClientRect();
+      const after = (e.clientY - rect.top) > rect.height / 2;
+      if(after) block.after(draggedEl); else block.before(draggedEl);
+      panelDragKey = null;
+      savePanelOrderConfig();
+    });
+  });
 }
 
 function setupPanelVisibilityRealtime(){
@@ -2481,6 +2654,12 @@ function setupPanelVisibilityRealtime(){
         if(Array.isArray(valor.ordem)) state.columnOrder = valor.ordem;
         if(Array.isArray(valor.visiveis)) state.visibleColumns = new Set(valor.visiveis);
         buildColumnPanel();
+        renderItemsTable(filtered());
+      } else if(chave === 'paineis_ordem' && Array.isArray(valor)){
+        applyPanelOrder(valor);
+      } else if(chave === 'plano_aprovado_em'){
+        state.planoAprovadoEm = valor || null;
+        updatePlanoToggleUI();
         renderItemsTable(filtered());
       }
     })
@@ -2680,7 +2859,7 @@ function buildCurveDatasets(list){
   const labels = keys.map(k => granularity==='week' ? weekLabel(k) : fmtDateShort(k));
 
   let cumPlan = 0, cumReal = 0;
-  const due = [], planned = [], real = [];
+  const due = [], dueReal = [], planned = [], real = [];
   // recalcula o acumulado desde o início do projeto até cada ponto do eixo (mesmo que
   // o eixo esteja recortado pelo intervalo de datas, o acumulado continua correto)
   const fullKeys = Array.from(keySet).sort();
@@ -2693,14 +2872,16 @@ function buildCurveDatasets(list){
   });
   keys.forEach(k=>{
     const dueCount = base.filter(it=>keyOf(it.termino_date) === k).length;
+    const dueRealCount = base.filter(it=>it.termino_real_date && keyOf(it.termino_real_date) === k).length;
     due.push(dueCount);
+    dueReal.push(dueRealCount);
     planned.push(totalBase - cumPlanAt[k]);
     // a linha de realizado (baixas) só é exibida até a data-base — sem projeção para o futuro
     real.push(k <= todayKey ? (totalBase - cumRealAt[k]) : null);
   });
   const todayIdx = keys.findIndex(k=>k >= todayKey);
   const hasReal = base.some(it=>it.termino_real_date);
-  return {labels, due, planned, real, todayIdx, totalBase, hasReal};
+  return {labels, due, dueReal, planned, real, todayIdx, totalBase, hasReal};
 }
 
 function todayLinePlugin(todayIdxRef){
@@ -2724,14 +2905,20 @@ function todayLinePlugin(todayIdxRef){
   };
 }
 
-function chartConfig(labels, due, planned, real, hasReal, todayIdxRef){
+function chartConfig(labels, due, dueReal, planned, real, hasReal, todayIdxRef){
   const datasets = [
-    { type:'bar', label:'Itens com término previsto no período', data: due,
-      backgroundColor:'rgba(0,43,92,0.30)', borderRadius:2, yAxisID:'y1', order:3, barPercentage:0.6 },
+    { type:'bar', label:'Previsto no período', data: due,
+      backgroundColor:'rgba(0,43,92,0.30)', borderRadius:2, yAxisID:'y1', order:3, barPercentage:0.55, categoryPercentage:0.7 },
+  ];
+  if(hasReal){
+    datasets.push({ type:'bar', label:'Real no período (baixas)', data: dueReal,
+      backgroundColor:'rgba(146,208,80,0.75)', borderRadius:2, yAxisID:'y1', order:3, barPercentage:0.55, categoryPercentage:0.7 });
+  }
+  datasets.push(
     { type:'line', label:'Remanescente planejado', data: planned,
       borderColor:'#002B5C', backgroundColor:'rgba(0,43,92,0.08)', fill:true,
-      tension:.15, pointRadius:2, pointBackgroundColor:'#002B5C', borderWidth:2.5, yAxisID:'y', order:2 },
-  ];
+      tension:.15, pointRadius:2, pointBackgroundColor:'#002B5C', borderWidth:2.5, yAxisID:'y', order:2 }
+  );
   if(hasReal){
     datasets.push({ type:'line', label:'Remanescente realizado (baixas)', data: real,
       borderColor:'#6FA834', backgroundColor:'rgba(146,208,80,0.15)', fill:false, spanGaps:false,
@@ -2760,20 +2947,22 @@ const expandedTodayIdxRef = {value:-1};
 const mainTodayIdxRef = {value:-1};
 
 function renderCurve(list){
-  const {labels, due, planned, real, todayIdx, hasReal} = buildCurveDatasets(list);
+  const {labels, due, dueReal, planned, real, todayIdx, hasReal} = buildCurveDatasets(list);
   mainTodayIdxRef.value = todayIdx;
   const ctx = document.getElementById('chart-curve').getContext('2d');
   if(curveChart) curveChart.destroy();
-  curveChart = new Chart(ctx, chartConfig(labels, due, planned, real, hasReal, mainTodayIdxRef));
+  curveChart = new Chart(ctx, chartConfig(labels, due, dueReal, planned, real, hasReal, mainTodayIdxRef));
 
   const legendReal = document.getElementById('legend-real');
   if(legendReal) legendReal.style.display = hasReal ? 'flex' : 'none';
+  const legendRealExpanded = document.getElementById('legend-real-expanded');
+  if(legendRealExpanded) legendRealExpanded.style.display = hasReal ? 'flex' : 'none';
 
   if(isExpanded){
     expandedTodayIdxRef.value = todayIdx;
     const ctx2 = document.getElementById('chart-curve-expanded').getContext('2d');
     if(curveChartExpanded) curveChartExpanded.destroy();
-    curveChartExpanded = new Chart(ctx2, chartConfig(labels, due, planned, real, hasReal, expandedTodayIdxRef));
+    curveChartExpanded = new Chart(ctx2, chartConfig(labels, due, dueReal, planned, real, hasReal, expandedTodayIdxRef));
   }
 }
 
@@ -3139,7 +3328,7 @@ const CELL_RENDERERS = {
   termino_real_date: i => `<td class="num">${i.termino_real_date ? fmtDate(i.termino_real_date) : '—'}</td>`,
   qtd: i => `<td class="num">${i.qtd != null ? i.qtd + (i.und?(' '+i.und):'') : '—'}</td>`,
   responsavel: i => `<td>${i.responsavel && i.responsavel !== 'Não atribuído' ? i.responsavel : '<span style="color:var(--text-dim);">Não atribuído</span>'}</td>`,
-  descricao: i => `<td class="desc">${i.descricao}${i.obs ? `<div style="color:var(--text-dim);font-size:11px;margin-top:2px;">${i.obs}</div>` : ''}</td>`,
+  descricao: i => `<td class="desc">${isItemNovo(i) ? `<span class="badge badge-novo" title="Cadastrado após o plano ter sido salvo"><span class="badge-dot"></span>🆕 Novo</span> ` : ''}${i.descricao}${i.obs ? `<div style="color:var(--text-dim);font-size:11px;margin-top:2px;">${i.obs}</div>` : ''}</td>`,
   status: i => `<td><span class="badge badge-${i.status}"><span class="badge-dot"></span>${STATUS_LABEL[i.status]}</span></td>`,
 };
 const COLUMN_LABELS = Object.fromEntries(COLUMN_DEFS.map(c=>[c.key, c.label]));
@@ -4284,6 +4473,13 @@ document.getElementById('filterbar-toggle').addEventListener('click', ()=>{
   const fb = document.getElementById('filterbar');
   setFilterbarCollapsed(!fb.classList.contains('collapsed'));
 });
+document.getElementById('filterbar-pin-btn').addEventListener('click', e=>{
+  const fb = document.getElementById('filterbar');
+  const nowUnpinned = !fb.classList.contains('unpinned');
+  fb.classList.toggle('unpinned', nowUnpinned);
+  e.currentTarget.classList.toggle('active', !nowUnpinned);
+  e.currentTarget.textContent = nowUnpinned ? '📌 Solto' : '📌 Fixado';
+});
 function applyDefaultFilterbarState(){
   if(filterbarUserToggled) return; // não sobrescreve escolha manual do usuário
   setFilterbarCollapsed(window.innerWidth <= 640);
@@ -4374,6 +4570,8 @@ async function bootstrap(){
     await fetchPanelVisibilityConfig();
     await fetchDataBaseConfig();
     await fetchColumnsConfig();
+    await fetchPanelOrderConfig();
+    await fetchPlanoConfig();
     applyPanelVisibility();
     buildPanelVisibilityControl();
     setupRealtime();
@@ -4385,6 +4583,8 @@ async function bootstrap(){
     MILESTONES = JSON.parse(JSON.stringify(SAMPLE_MILESTONES));
     dataLabel = 'dados de exemplo (offline)';
     setDataSourceStatus('err', '🔴 Sem conexão com o banco — exibindo dados de exemplo offline');
+    applyPanelOrder(DEFAULT_PANEL_ORDER);
+    updatePlanoToggleUI();
   }
 
   SUM = computeSummary(ITEMS, state.today);
@@ -4393,6 +4593,8 @@ async function bootstrap(){
   renderAll();
   updateCurrentWeekBadge();
   applyDefaultFilterbarState();
+  setupPanelReorder();
+  wirePlanoToggle();
 }
 
 // ===================================================================
