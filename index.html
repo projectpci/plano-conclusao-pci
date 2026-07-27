@@ -671,7 +671,9 @@ body.role-viewer .role-badge .rb-dot{background:rgba(255,255,255,0.4);}
 .diff-modal .diff-sub{font-size:12px;color:var(--text-dim);margin-bottom:18px;}
 .diff-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
 .diff-stat{background:var(--panel-bg);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;}
+.diff-stat-danger{background:rgba(229,72,77,0.06);border-color:rgba(229,72,77,0.3);}
 .diff-stat .ds-num{font-family:var(--disp);font-weight:700;font-size:26px;color:var(--navy);}
+.diff-stat-danger .ds-num{color:var(--red);}
 .diff-stat .ds-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--text-dim);margin-top:2px;}
 .diff-list{margin-bottom:14px;}
 .diff-list h4{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--text-dim);margin:0 0 8px;}
@@ -1463,12 +1465,19 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
   <div class="diff-modal">
     <h3>O que mudou nesta revisão</h3>
     <div class="diff-sub" id="diff-sub"></div>
-    <div class="diff-stat-row">
+    <div class="diff-stat-row" style="grid-template-columns:repeat(4,1fr);">
       <div class="diff-stat"><div class="ds-num" id="diff-closed-num">0</div><div class="ds-label">Fechados</div></div>
       <div class="diff-stat"><div class="ds-num" id="diff-new-num">0</div><div class="ds-label">Novos</div></div>
       <div class="diff-stat"><div class="ds-num" id="diff-reprog-num">0</div><div class="ds-label">Reprogramados</div></div>
+      <div class="diff-stat diff-stat-danger"><div class="ds-num" id="diff-removed-num">0</div><div class="ds-label">Saíram da planilha</div></div>
     </div>
     <div id="diff-lists"></div>
+    <div id="diff-removed-action" style="display:none;margin-top:6px;padding:12px 14px;background:rgba(229,72,77,0.08);border:1px solid rgba(229,72,77,0.3);border-radius:8px;">
+      <p style="font-size:12.5px;color:var(--text-lo);margin:0 0 10px;">
+        Esses itens continuam salvos no banco (não foram apagados automaticamente). Se eles realmente não existem mais no escopo, você pode removê-los agora.
+      </p>
+      <button class="diff-close-btn" id="diff-remove-btn" style="background:var(--red);">🗑 Remover os itens que saíram da planilha</button>
+    </div>
     <button class="diff-close-btn" id="diff-close-btn">Entendi</button>
   </div>
 </div>
@@ -4421,20 +4430,59 @@ document.getElementById('export-confirm-btn').addEventListener('click', async ()
 function computeRevisionDiff(oldItems, newItems){
   const oldById = new Map(oldItems.map(i=>[String(i.item), i]));
   const newById = new Map(newItems.map(i=>[String(i.item), i]));
-  const closed = [], opened = [], reprogrammed = [];
+  const closed = [], opened = [], reprogrammed = [], removed = [];
   newById.forEach((it, key)=>{
     const prev = oldById.get(key);
     if(!prev){ opened.push(it); return; }
     if(it.status === 'concluido' && prev.status !== 'concluido'){ closed.push(it); }
     if(it.termino_date && prev.termino_date && it.termino_date !== prev.termino_date){ reprogrammed.push({it, from: prev.termino_date, to: it.termino_date}); }
   });
-  return {closed, opened, reprogrammed};
+  oldById.forEach((it, key)=>{
+    if(!newById.has(key)) removed.push(it);
+  });
+  return {closed, opened, reprogrammed, removed};
 }
+let lastRemovedItems = [];
+async function removeOrphanedItems(){
+  if(lastRemovedItems.length === 0) return;
+  const btn = document.getElementById('diff-remove-btn');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Removendo...';
+  try{
+    const ids = lastRemovedItems.map(i=>String(i.item));
+    if(dbConnected){
+      for(let i=0; i<ids.length; i+=200){
+        const chunk = ids.slice(i, i+200);
+        const {error} = await sb.from('pendencias').delete().in('id', chunk);
+        if(error) throw error;
+      }
+    }
+    ITEMS = ITEMS.filter(it => !ids.includes(String(it.item)));
+    SUM = computeSummary(ITEMS, state.today);
+    buildChips();
+    renderAll();
+    showToast(`${ids.length} item(ns) removido(s) do banco`, 'ok');
+    document.getElementById('diff-removed-action').style.display = 'none';
+    lastRemovedItems = [];
+  } catch(err){
+    console.error(err);
+    showToast('Não foi possível remover os itens', 'err');
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+document.getElementById('diff-remove-btn').addEventListener('click', ()=>{
+  const ok = confirm(`Remover definitivamente ${lastRemovedItems.length} item(ns) que saíram da planilha? Essa ação apaga do banco de dados e não pode ser desfeita.`);
+  if(ok) removeOrphanedItems();
+});
+
 function showRevisionDiff(diff, oldTotal, newTotal){
   document.getElementById('diff-sub').textContent = `Total anterior: ${oldTotal} itens · Total nesta revisão: ${newTotal} itens`;
   document.getElementById('diff-closed-num').textContent = diff.closed.length;
   document.getElementById('diff-new-num').textContent = diff.opened.length;
   document.getElementById('diff-reprog-num').textContent = diff.reprogrammed.length;
+  document.getElementById('diff-removed-num').textContent = diff.removed.length;
+  lastRemovedItems = diff.removed;
 
   const listsEl = document.getElementById('diff-lists');
   const section = (title, rows)=>{
@@ -4444,11 +4492,13 @@ function showRevisionDiff(diff, oldTotal, newTotal){
   listsEl.innerHTML =
     section('Fechados desde a última revisão', diff.closed.map(i=>`<b>${i.item}</b> — ${i.descricao}`)) +
     section('Novos itens', diff.opened.map(i=>`<b>${i.item}</b> — ${i.descricao}`)) +
-    section('Reprogramados', diff.reprogrammed.map(r=>`<b>${r.it.item}</b> — ${r.it.descricao} (${fmtDate(r.from)} → ${fmtDate(r.to)})`));
+    section('Reprogramados', diff.reprogrammed.map(r=>`<b>${r.it.item}</b> — ${r.it.descricao} (${fmtDate(r.from)} → ${fmtDate(r.to)})`)) +
+    section('Saíram da planilha (continuam salvos no banco)', diff.removed.map(i=>`<b>${i.item}</b> — ${i.descricao}`));
 
-  if(diff.closed.length + diff.opened.length + diff.reprogrammed.length === 0){
-    listsEl.innerHTML = '<div class="diff-row">Nenhuma mudança de status, novos itens ou reprogramação detectada em relação à revisão anterior.</div>';
+  if(diff.closed.length + diff.opened.length + diff.reprogrammed.length + diff.removed.length === 0){
+    listsEl.innerHTML = '<div class="diff-row">Nenhuma mudança de status, novos itens, reprogramação ou remoção detectada em relação à revisão anterior.</div>';
   }
+  document.getElementById('diff-removed-action').style.display = diff.removed.length > 0 ? 'block' : 'none';
   document.getElementById('diff-modal-overlay').classList.add('open');
 }
 document.getElementById('diff-close-btn').addEventListener('click', ()=>{
