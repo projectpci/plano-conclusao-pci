@@ -334,6 +334,17 @@ select:focus, .search-input:focus{border-color:var(--info-blue);}
 
 .chart-layout-bar{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
 
+.datalabels-toggle{
+  font-family:var(--body);font-weight:600;font-size:12px;white-space:nowrap;
+  background:var(--surface);border:1px solid var(--border);color:var(--text-lo);
+  padding:8px 12px;border-radius:100px;cursor:pointer;transition:all .15s ease;
+}
+.datalabels-toggle .dlt-state{font-family:var(--mono);font-weight:700;}
+.datalabels-toggle:hover{border-color:var(--navy);}
+.datalabels-toggle.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.curve-overlay .datalabels-toggle{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.25);color:#fff;}
+.curve-overlay .datalabels-toggle.active{background:var(--green);border-color:var(--green);color:#0B1F33;}
+
 .panels-settings-collapsed{margin-bottom:20px;}
 .panels-settings-toggle{
   width:100%;display:flex;align-items:center;justify-content:space-between;
@@ -1006,8 +1017,8 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
         <button class="fdrop-btn" data-target="responsavel">Responsável <span class="caret">▾</span></button>
         <div class="fdrop-panel" id="fdrop-panel-responsavel"></div>
       </div>
-      <button class="fdrop-btn" id="today-filter-btn" title="Mostra o que vence até a data-base e ainda não foi concluído (inclui atrasados de dias anteriores)">📅 Programação hoje</button>
-      <button class="fdrop-btn" id="week-filter-btn" title="Mostra o que vence até o fim da semana da data-base e ainda não foi concluído (inclui atrasados de semanas anteriores)">🗓 Programação semana</button>
+      <button class="fdrop-btn" id="today-filter-btn" title="Mostra o que vence até a data-base (inclui atrasados) e o que foi concluído hoje">📅 Programação hoje</button>
+      <button class="fdrop-btn" id="week-filter-btn" title="Mostra o que vence até o fim da semana da data-base (inclui atrasados) e o que foi concluído nesta semana">🗓 Programação semana</button>
       <select id="sel-local"><option value="all">Todos os locais</option></select>
       <input class="search-input" id="search-input" type="text" placeholder="Buscar descrição, local...">
       <button class="reset-btn" id="reset-btn">✕ Limpar filtros</button>
@@ -1037,6 +1048,9 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
             <input type="date" id="curve-range-end" title="Até">
             <button class="drp-clear" id="curve-range-clear" title="Limpar intervalo">✕</button>
           </div>
+          <button class="datalabels-toggle" data-chart-key="curve" onclick="toggleDataLabels('curve')" title="Mostrar o valor de cada coluna/linha diretamente no gráfico">
+            🏷️ Rótulos: <span class="dlt-state">Não</span>
+          </button>
           <button class="expand-btn quick-export-btn" data-scope="curve" title="Exportar esta curva">⭳</button>
           <button class="expand-btn" id="expand-btn">⤢ Expandir</button>
         </div>
@@ -1093,7 +1107,12 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
           <div class="panel scroll-reveal" data-panel="disc">
             <div class="panel-head">
               <div class="panel-title"><span class="reorder-handle" title="Arraste para reordenar">⠿</span>Pendências por Disciplina</div>
-              <button class="expand-btn generic-expand-btn" data-chart="disc">⤢ Expandir</button>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <button class="datalabels-toggle" data-chart-key="disc" onclick="toggleDataLabels('disc')" title="Mostrar o valor de cada coluna diretamente no gráfico">
+                  🏷️ Rótulos: <span class="dlt-state">Não</span>
+                </button>
+                <button class="expand-btn generic-expand-btn" data-chart="disc">⤢ Expandir</button>
+              </div>
             </div>
             <p class="panel-note">Distribuição das pendências filtradas por disciplina, segmentada por classificação.</p>
             <div class="chart-wrap"><canvas id="chart-disc" height="230"></canvas></div>
@@ -1104,6 +1123,9 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
               <div class="panel-title">Programação da Semana por Disciplina</div>
               <div style="display:flex;align-items:center;gap:10px;">
                 <span class="week-range" id="week-range-label"></span>
+                <button class="datalabels-toggle" data-chart-key="week" onclick="toggleDataLabels('week')" title="Mostrar o valor de cada coluna diretamente no gráfico">
+                  🏷️ Rótulos: <span class="dlt-state">Não</span>
+                </button>
                 <button class="expand-btn quick-export-btn" data-scope="week" title="Exportar esta programação">⭳</button>
                 <button class="expand-btn generic-expand-btn" data-chart="week">⤢ Expandir</button>
               </div>
@@ -1346,9 +1368,9 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
       <div class="panel-head"><div class="panel-title">Filtros</div></div>
       <div class="doc-def-list">
         <div class="doc-def"><b>Lógica inversa:</b> nos filtros de dropdown (Classificação, Disciplina, Status do prazo, Semana, Responsável), nenhuma opção marcada significa "mostrar tudo". Marcar uma ou mais opções restringe a lista a apenas essas. "✕ Limpar filtros" desmarca tudo de uma vez.</div>
-        <div class="doc-def"><b>📅 Programação hoje:</b> mostra tudo o que já deveria estar pronto até a data-base e ainda não foi concluído — inclui o previsto para o dia e o que ficou atrasado de dias anteriores.</div>
-        <div class="doc-def"><b>🗓 Programação Sem. [código]:</b> mesma lógica, mas até o fim da semana da data-base (o nome do botão já indica qual semana, ex: S03-Jul) — inclui atrasados de semanas anteriores.</div>
-        <div class="doc-def">Nos dois casos, itens já concluídos ou com data no futuro (além do período) não aparecem.</div>
+        <div class="doc-def"><b>📅 Programação hoje:</b> mostra o que ainda está em aberto com previsão até a data-base (inclui atrasados de dias anteriores) <b>mais</b> o que foi concluído hoje.</div>
+        <div class="doc-def"><b>🗓 Programação Sem. [código]:</b> mesma lógica, mas até o fim da semana da data-base (o nome do botão já indica qual semana, ex: S03-Jul) — inclui atrasados de semanas anteriores <b>mais</b> o que foi concluído nesta semana.</div>
+        <div class="doc-def">Nos dois casos, itens concluídos <i>fora</i> do período (antes ou depois) e itens com previsão no futuro (além do período) não aparecem.</div>
         <div class="doc-def"><b>Recolher filtros:</b> o botão "Filtros ▾" no topo da barra esconde/mostra os controles — em telas de celular ela já começa recolhida automaticamente, para não ocupar a tela toda.</div>
       </div>
     </div>
@@ -1402,6 +1424,9 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
         <input type="date" id="curve-range-end-expanded" title="Até">
         <button class="drp-clear" id="curve-range-clear-expanded" title="Limpar intervalo">✕</button>
       </div>
+      <button class="datalabels-toggle" data-chart-key="curve" onclick="toggleDataLabels('curve')" title="Mostrar o valor de cada coluna/linha diretamente no gráfico">
+        🏷️ Rótulos: <span class="dlt-state">Não</span>
+      </button>
       <button class="close-btn" id="collapse-btn">✕ Fechar</button>
     </div>
   </div>
@@ -2259,18 +2284,15 @@ function matches(it){
   if(state.status.size && !state.status.has(it.status)) return false;
   if(state.semanas.size && !state.semanas.has(it.semana_key)) return false;
   if(state.responsaveis.size && !state.responsaveis.has(it.responsavel)) return false;
-  // "Programação hoje/semana": mostram tudo que já deveria estar pronto até o
-  // período (data-base ou fim da semana), inclusive o que ficou para trás em
-  // períodos anteriores — mesma lógica de "reprogramado" usada no painel semanal.
-  // Itens já concluídos e itens com data futura (além do período) ficam de fora.
+  // "Programação hoje/semana": respeita sempre a PREVISÃO (não a data real) —
+  // só entram itens cujo término previsto cai dentro do período (hoje, ou dentro
+  // da semana corrente), estejam concluídos ou não. Fora do período, não entra.
   if(state.onlyToday){
-    if(!it.termino_date || it.status === 'concluido') return false;
-    if(it.termino_date > state.today) return false;
+    if(!it.termino_date || it.termino_date !== state.today) return false;
   }
   if(state.onlyThisWeek){
-    if(!it.termino_date || it.status === 'concluido') return false;
-    const {end} = getWeekWindow(state.today);
-    if(it.termino_date > end) return false;
+    const {start, end} = getWeekWindow(state.today);
+    if(!it.termino_date || it.termino_date < start || it.termino_date > end) return false;
   }
   if(state.local !== 'all' && it.local !== state.local) return false;
   if(state.search){
@@ -3022,6 +3044,47 @@ function todayLinePlugin(todayIdxRef){
   };
 }
 
+// ===================================================================
+// RÓTULOS DE DADOS — plugin genérico que desenha o valor sobre cada
+// barra/ponto quando ativado (botão "🏷️ Rótulos" no Dashboard e na Curva)
+// ===================================================================
+state.showDataLabels = {disc:false, week:false, curve:false};
+function makeDataLabelsPlugin(key){
+  return {
+    id: 'valueDataLabels_' + key,
+    afterDatasetsDraw(chart){
+      if(!state.showDataLabels[key]) return;
+      const {ctx} = chart;
+      chart.data.datasets.forEach((dataset, dsIndex)=>{
+        const meta = chart.getDatasetMeta(dsIndex);
+        if(meta.hidden) return;
+        meta.data.forEach((element, index)=>{
+          const raw = dataset.data[index];
+          if(raw === null || raw === undefined || raw === 0) return;
+          const pos = element.tooltipPosition ? element.tooltipPosition() : {x:element.x, y:element.y};
+          const label = typeof raw === 'number' ? (Number.isInteger(raw) ? String(raw) : raw.toFixed(1)) : String(raw);
+          ctx.save();
+          ctx.font = "700 10.5px 'IBM Plex Mono', monospace";
+          ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+          ctx.fillStyle = '#000000'; // padrão: sempre preto, sempre acima do elemento
+          ctx.fillText(label, pos.x, pos.y - 6);
+          ctx.restore();
+        });
+      });
+    }
+  };
+}
+function toggleDataLabels(key){
+  state.showDataLabels[key] = !state.showDataLabels[key];
+  document.querySelectorAll(`.datalabels-toggle[data-chart-key="${key}"]`).forEach(btn=>{
+    btn.classList.toggle('active', state.showDataLabels[key]);
+    btn.querySelector('.dlt-state').textContent = state.showDataLabels[key] ? 'Sim' : 'Não';
+  });
+  if(key === 'disc') renderDiscChart(filtered());
+  if(key === 'week') renderWeekChart(filtered());
+  if(key === 'curve') renderCurve(filtered());
+}
+
 function chartConfig(labels, due, dueReal, planned, real, hasReal, todayIdxRef){
   const datasets = [
     { type:'bar', label:'Previsto no período', data: due,
@@ -3056,7 +3119,7 @@ function chartConfig(labels, due, dueReal, planned, real, hasReal, todayIdxRef){
         y1:{ position:'right', grid:{display:false}, ticks:{color:'#0A3B70', font:{family:'IBM Plex Mono', size:10}}, title:{display:true, text:'Itens/período', color:'#0A3B70', font:{family:'Inter', size:11}} },
       }
     },
-    plugins:[ todayLinePlugin(todayIdxRef) ]
+    plugins:[ todayLinePlugin(todayIdxRef), makeDataLabelsPlugin('curve') ]
   };
 }
 
@@ -3232,7 +3295,8 @@ function buildDiscChartConfig(list){
         x:{ stacked:true, grid:{color:'rgba(46,155,98,0.14)'}, ticks:{color:'#3E6B52', font:{family:'IBM Plex Mono', size:10}} },
         y:{ stacked:true, grid:{display:false}, ticks:{color:'#123322', font:{family:'Inter', size:12}} },
       }
-    }
+    },
+    plugins:[makeDataLabelsPlugin('disc')],
   };
 }
 function renderDiscChart(list){
@@ -3304,7 +3368,8 @@ function buildWeekChartConfig(list, discFilter){
           x:{ grid:{color:'rgba(217,232,206,0.7)'}, ticks:{color:'#3E5468', font:{family:'IBM Plex Mono', size:10}, precision:0} },
           y:{ grid:{display:false}, ticks:{color:'#0B1F33', font:{family:'Inter', size:12}} },
         }
-      }
+      },
+      plugins:[makeDataLabelsPlugin('week')],
     }
   };
 }
