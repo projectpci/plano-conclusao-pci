@@ -165,6 +165,20 @@ body{
   border:1px solid var(--border);border-left:3px solid var(--green);border-radius:10px;
   padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
 }
+
+.fechamento-cta{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+  background:linear-gradient(135deg, rgba(0,43,92,0.05), rgba(146,208,80,0.08));
+  border:1.5px dashed var(--navy);border-radius:10px;padding:13px 16px;margin-bottom:16px;
+  cursor:pointer;transition:all .15s ease;
+}
+.fechamento-cta:hover{background:linear-gradient(135deg, rgba(0,43,92,0.09), rgba(146,208,80,0.14));border-style:solid;}
+.fechamento-cta .fc-icon{font-size:22px;flex-shrink:0;}
+.fechamento-cta .fc-text{flex:1;display:flex;flex-direction:column;gap:2px;}
+.fechamento-cta .fc-title{font-family:var(--disp);font-weight:700;font-size:14.5px;color:var(--navy);text-transform:uppercase;letter-spacing:0.01em;}
+.fechamento-cta .fc-sub{font-size:11.5px;color:var(--text-lo);line-height:1.4;}
+.fechamento-cta .fc-arrow{font-size:18px;color:var(--navy);flex-shrink:0;}
+@media(max-width:640px){.fechamento-cta .fc-sub{display:none;}}
 .plano-toggle-text .pt-title{font-family:var(--disp);font-weight:700;font-size:14.5px;color:var(--text-hi);text-transform:uppercase;}
 .plano-toggle-text .pt-sub{font-size:12px;color:var(--text-lo);margin-top:2px;}
 .pt-switch-lg{position:relative;width:46px;height:26px;flex-shrink:0;cursor:pointer;}
@@ -358,6 +372,22 @@ select:focus, .search-input:focus{border-color:var(--info-blue);}
 .pt-switch input:checked ~ .pt-slider{background:var(--navy);}
 .pt-switch input:checked ~ .pt-slider::before{transform:translateX(17px);}
 .pt-switch input:focus-visible ~ .pt-slider{box-shadow:0 0 0 2px var(--green);}
+
+.admin-actions-bar{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:10px 16px;margin-bottom:20px;
+}
+.admin-action-item{display:flex;align-items:center;gap:9px;}
+.admin-action-item .aa-label{font-family:var(--body);font-weight:600;font-size:12.5px;color:var(--text-hi);white-space:nowrap;}
+.admin-action-item .aa-hint{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;}
+.admin-actions-divider{width:1px;height:20px;background:var(--border);flex-shrink:0;}
+.admin-action-btn{
+  font-family:var(--body);font-weight:600;font-size:12.5px;white-space:nowrap;
+  background:var(--panel-bg);border:1px solid var(--navy);color:var(--navy);
+  padding:7px 13px;border-radius:7px;cursor:pointer;transition:all .15s ease;
+}
+.admin-action-btn:hover{background:var(--navy);color:#fff;}
 
 .dash-charts-wrap{display:grid;gap:20px;min-width:0;}
 .dash-charts-wrap.layout-grid{grid-template-columns:1fr 1.3fr;}
@@ -727,6 +757,38 @@ body.role-viewer .role-badge .rb-dot{background:rgba(255,255,255,0.4);}
 .export-scope-item .es-label{font-size:13px;font-weight:500;color:var(--text-hi);}
 .export-scope-item .es-note{font-size:11px;color:var(--text-dim);margin-top:1px;}
 .export-scope-item.disabled{opacity:0.45;pointer-events:none;}
+
+.export-group-picker{
+  margin:-4px 0 10px 14px;padding:10px 12px;border:1px solid var(--border-soft);border-left:2px solid var(--navy);
+  border-radius:0 8px 8px 0;background:var(--panel-bg);
+}
+.export-group-picker .egp-all{
+  display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--navy);
+  padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--border-soft);cursor:pointer;
+}
+.export-group-picker .egp-values{
+  display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:4px 12px;
+  max-height:160px;overflow-y:auto;
+}
+.export-group-picker .egp-value{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-lo);cursor:pointer;padding:2px 0;}
+.export-group-picker input{width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;}
+
+.fechamento-subtabs{display:flex;gap:8px;margin-bottom:14px;border-bottom:1px solid var(--border);}
+.fst-btn{
+  font-family:var(--body);font-weight:600;font-size:12.5px;color:var(--text-dim);
+  background:none;border:none;border-bottom:2px solid transparent;padding:8px 4px;cursor:pointer;margin-bottom:-1px;
+}
+.fst-btn.active{color:var(--navy);border-bottom-color:var(--navy);}
+.fechamento-subview{display:none;}
+.fechamento-subview.active{display:block;}
+.fech-summary-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;}
+.fech-summary-table th, .fech-summary-table td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--border-soft);}
+.fech-summary-table th{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;color:var(--text-dim);text-align:right;}
+.fech-summary-table th:first-child, .fech-summary-table td:first-child{text-align:left;}
+.fech-summary-table td:first-child{font-weight:600;color:var(--text-hi);font-family:var(--body);}
+.fech-summary-table td{font-family:var(--mono);color:var(--text-lo);}
+.fech-summary-table tr.total-row{font-weight:700;border-top:1px solid var(--border);}
+.fech-summary-table tr.total-row td{color:var(--text-hi);}
 .gear-row-btn{
   width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);
   color:var(--text-lo);cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;
@@ -889,16 +951,29 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
     <input type="file" id="file-input" accept=".xlsx,.xls">
   </div>
 
-  <!-- ============ SALVAR PLANO (marca itens novos daqui pra frente) ============ -->
-  <div class="plano-toggle-bar" data-role-only="admin">
-    <div class="plano-toggle-text">
-      <div class="pt-title">📌 Salvar Plano</div>
-      <div class="pt-sub" id="plano-toggle-sub">Desligado — nenhuma pendência está sendo marcada como nova.</div>
+  <!-- ============ SALVAR PLANO + FECHAMENTO DE PROGRAMAÇÃO (somente Administrador) ============ -->
+  <div class="admin-actions-bar" data-role-only="admin">
+    <div class="admin-action-item">
+      <span class="aa-label">📌 Salvar Plano</span>
+      <label class="pt-switch">
+        <input type="checkbox" id="plano-toggle-input">
+        <span class="pt-slider"></span>
+      </label>
+      <span class="aa-hint" id="plano-toggle-sub">desligado</span>
     </div>
-    <label class="pt-switch-lg">
-      <input type="checkbox" id="plano-toggle-input">
-      <span class="pt-slider-lg"></span>
-    </label>
+    <span class="admin-actions-divider"></span>
+    <button class="admin-action-btn" id="fechamento-open-btn">📋 Gerar Fechamento de Programação</button>
+  </div>
+
+  <div class="panels-settings-collapsed block" id="panels-settings-collapsed" data-role-only="admin">
+    <button class="panels-settings-toggle" id="panels-settings-toggle">
+      <span>⚙ Configurar Painéis Visíveis</span>
+      <span class="pst-caret">▾</span>
+    </button>
+    <div class="panels-settings-body" id="panels-settings-body">
+      <p class="panel-note" style="margin-top:14px;">Escolha quais gráficos e indicadores aparecem no Dashboard. Visível apenas para o Administrador — a seleção também se aplica ao perfil de Visualização.</p>
+      <div id="panels-visibility-groups"></div>
+    </div>
   </div>
 
   <!-- ============ SHARED FILTER BAR (dropdowns) ============ -->
@@ -1004,17 +1079,6 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
       </div>
     </div>
 
-    <div class="panels-settings-collapsed block" id="panels-settings-collapsed" data-role-only="admin">
-      <button class="panels-settings-toggle" id="panels-settings-toggle">
-        <span>⚙ Configurar Painéis Visíveis</span>
-        <span class="pst-caret">▾</span>
-      </button>
-      <div class="panels-settings-body" id="panels-settings-body">
-        <p class="panel-note" style="margin-top:14px;">Escolha quais gráficos e indicadores aparecem no Dashboard. Visível apenas para o Administrador — a seleção também se aplica ao perfil de Visualização.</p>
-        <div id="panels-visibility-groups"></div>
-      </div>
-    </div>
-
     <div id="dashboard-blocks">
       <div class="reorder-block" data-block="milestones" draggable="true">
         <div class="panel scroll-reveal" data-panel="milestones">
@@ -1045,7 +1109,7 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
               </div>
             </div>
             <div style="margin-bottom:10px;"><select id="week-disc-filter" style="min-width:160px;"><option value="all">Todas as disciplinas</option></select></div>
-            <p class="panel-note">Barras comparam <b>Previsto</b> (término planejado nesta semana) x <b>Real</b> (baixas efetivamente registradas nesta semana), por disciplina. A tabela abaixo também inclui itens de semanas anteriores que não foram concluídos — marcados como "↻ Reprogramado".</p>
+            <p class="panel-note">Barras comparam <b>Previsto</b> (término planejado nesta semana) x <b>Real</b> (baixas efetivamente registradas nesta semana), por disciplina. A tabela abaixo também inclui itens de semanas anteriores que não foram concluídos — marcados como "↻ Reprogramado". Administradores encontram o botão "📋 Gerar Fechamento de Programação" no topo do painel.</p>
             <div class="chart-wrap"><canvas id="chart-week" height="200"></canvas></div>
             <div class="table-scroll" style="max-height:320px;margin-top:14px;">
               <table class="items" id="table-week">
@@ -1261,6 +1325,7 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
         <div class="doc-def"><b>Gráfico Previsto × Real:</b> compara, por disciplina, quantos itens tinham término previsto nesta semana contra quantos foram de fato baixados nesta semana.</div>
         <div class="doc-def"><b>Tabela abaixo:</b> lista todo item ainda não concluído com término dentro da semana corrente — <i>e também</i> o que já venceu em semanas anteriores e continua em aberto, marcado com o selo "↻ Reprogramado". Assim, nada some da programação só porque a semana passou.</div>
         <div class="doc-def">Use o seletor de disciplina para focar em uma frente específica, ou o botão "⤢ Expandir" para tela cheia.</div>
+        <div class="doc-def"><b>📋 Fechamento:</b> gera um relatório de fechamento da semana corrente, classificando cada atividade em 4 grupos — Prevista e Realizada, Antecipada (fechada antes do previsto), Atrasada (reprogramada de semana anterior) e Não Realizada (ainda em aberto). Respeita os filtros ativos e pode ser exportado em PDF ou PNG direto do modal.</div>
       </div>
     </div>
 
@@ -1466,6 +1531,32 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
     <div class="edit-modal-actions">
       <button class="gp-cancel" id="export-cancel-btn" style="padding:10px 18px;border-radius:8px;border:none;background:var(--surface-2);color:var(--text-lo);cursor:pointer;">Cancelar</button>
       <button class="gp-confirm" id="export-confirm-btn" style="padding:10px 18px;border-radius:8px;border:none;background:var(--navy);color:#fff;cursor:pointer;flex:1;">⭳ Baixar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Fechamento de Programação (fechamento semanal) -->
+<div class="diff-modal-overlay" id="fechamento-modal-overlay">
+  <div class="diff-modal" id="fechamento-modal-content" style="max-width:920px;">
+    <h3>📋 Fechamento de Programação</h3>
+    <div class="diff-sub" id="fechamento-sub"></div>
+    <div class="diff-stat-row" style="grid-template-columns:repeat(4,1fr);">
+      <div class="diff-stat"><div class="ds-num" id="fech-realizada-num">0</div><div class="ds-label">Prevista e Realizada</div></div>
+      <div class="diff-stat"><div class="ds-num" id="fech-antecipada-num">0</div><div class="ds-label">Antecipada</div></div>
+      <div class="diff-stat diff-stat-danger"><div class="ds-num" id="fech-atrasada-num">0</div><div class="ds-label">Atrasada (reprogramada)</div></div>
+      <div class="diff-stat"><div class="ds-num" id="fech-naorealizada-num">0</div><div class="ds-label">Não realizada</div></div>
+    </div>
+    <p class="panel-note" style="margin:0 0 14px;">Respeita os filtros ativos no painel. Critérios: <b>Prevista e Realizada</b> = término previsto e baixa dentro da semana · <b>Antecipada</b> = baixa nesta semana com término previsto para depois · <b>Atrasada</b> = término previsto antes desta semana (reprogramada) · <b>Não realizada</b> = prevista para esta semana e ainda em aberto.</p>
+    <div class="fechamento-subtabs">
+      <button class="fst-btn active" data-fsub="detalhado">📋 Detalhado</button>
+      <button class="fst-btn" data-fsub="resumo">📊 Resumo por Disciplina/Responsável</button>
+    </div>
+    <div id="fechamento-lists" class="fechamento-subview active"></div>
+    <div id="fechamento-summary" class="fechamento-subview"></div>
+    <div class="edit-modal-actions" id="fechamento-actions">
+      <button class="gp-cancel" id="fechamento-close-btn" style="padding:10px 18px;border-radius:8px;border:none;background:var(--surface-2);color:var(--text-lo);cursor:pointer;">Fechar</button>
+      <button class="gp-confirm" id="fechamento-export-pdf-btn" style="padding:10px 18px;border-radius:8px;border:none;background:var(--navy);color:#fff;cursor:pointer;flex:1;">⭳ Exportar PDF</button>
+      <button class="gp-confirm" id="fechamento-export-png-btn" style="padding:10px 18px;border-radius:8px;border:none;background:var(--surface-2);color:var(--text-hi);cursor:pointer;">⭳ PNG</button>
     </div>
   </div>
 </div>
@@ -1981,6 +2072,7 @@ function dbRowToItem(row){
     obs: row.obs || '',
     responsavel: row.responsavel || '',
     criado_em: row.criado_em || null,
+    programacao_interna_date: row.programacao_interna_date || null,
   };
 }
 function itemToDbRow(it){
@@ -1997,6 +2089,7 @@ function itemToDbRow(it){
     und: it.und || null,
     obs: it.obs || null,
     responsavel: (it.responsavel && it.responsavel !== 'Não atribuído') ? it.responsavel : null,
+    programacao_interna_date: it.programacao_interna_date || null,
     updated_at: new Date().toISOString(),
   };
 }
@@ -2203,6 +2296,7 @@ const COLUMN_DEFS = [
   {key:'termino_real_date', label:'Baixa (Data Real)'},
   {key:'qtd', label:'QTD'},
   {key:'responsavel', label:'Responsável'},
+  {key:'programacao_interna', label:'Data Programação Interna'},
   {key:'status', label:'Status', mandatory:true},
 ];
 state.columnOrder = COLUMN_DEFS.map(c=>c.key);
@@ -2549,9 +2643,13 @@ function updatePlanoToggleUI(){
   const sub = document.getElementById('plano-toggle-sub');
   if(!input || !sub) return;
   input.checked = !!state.planoAprovadoEm;
-  sub.textContent = state.planoAprovadoEm
-    ? `Ligado desde ${new Date(state.planoAprovadoEm).toLocaleString('pt-BR')} — tudo cadastrado depois disso aparece com o selo "🆕 Novo".`
-    : 'Desligado — nenhuma pendência está sendo marcada como nova.';
+  if(state.planoAprovadoEm){
+    sub.textContent = `ligado desde ${new Date(state.planoAprovadoEm).toLocaleDateString('pt-BR')}`;
+    sub.title = `Ligado desde ${new Date(state.planoAprovadoEm).toLocaleString('pt-BR')} — tudo cadastrado depois disso aparece com o selo "🆕 Novo".`;
+  } else {
+    sub.textContent = 'desligado';
+    sub.title = 'Nenhuma pendência está sendo marcada como nova.';
+  }
 }
 async function fetchPlanoConfig(){
   const valor = await fetchConfig('plano_aprovado_em');
@@ -3347,6 +3445,7 @@ const CELL_RENDERERS = {
   termino_real_date: i => `<td class="num">${i.termino_real_date ? fmtDate(i.termino_real_date) : '—'}</td>`,
   qtd: i => `<td class="num">${i.qtd != null ? i.qtd + (i.und?(' '+i.und):'') : '—'}</td>`,
   responsavel: i => `<td>${i.responsavel && i.responsavel !== 'Não atribuído' ? i.responsavel : '<span style="color:var(--text-dim);">Não atribuído</span>'}</td>`,
+  programacao_interna: i => `<td class="num">${i.programacao_interna_date ? fmtDate(i.programacao_interna_date) : '—'}</td>`,
   descricao: i => `<td class="desc">${isItemNovo(i) ? `<span class="badge badge-novo" title="Cadastrado após o plano ter sido salvo"><span class="badge-dot"></span>🆕 Novo</span> ` : ''}${i.descricao}${i.obs ? `<div style="color:var(--text-dim);font-size:11px;margin-top:2px;">${i.obs}</div>` : ''}</td>`,
   status: i => `<td><span class="badge badge-${i.status}"><span class="badge-dot"></span>${STATUS_LABEL[i.status]}</span></td>`,
 };
@@ -3889,6 +3988,7 @@ function parseSheet(rows){
   const cUnd = colIndex(header, 'Und.', 'Und');
   const cObs = colIndex(header, 'Observação', 'Observacao');
   const cResp = colIndex(header, 'Responsável', 'Responsavel', 'Resp.', 'Resp');
+  const cProgInterna = colIndex(header, 'Data Programação Interna', 'Data Programacao Interna', 'Programação Interna', 'Programacao Interna');
 
   if(cItem < 0 || cDisc < 0) return null;
 
@@ -3916,6 +4016,7 @@ function parseSheet(rows){
         termReal: cTermReal>=0 ? row[cTermReal] : null,
         obs: cObs>=0 ? row[cObs] : null,
         resp: cResp>=0 ? row[cResp] : null,
+        progInterna: cProgInterna>=0 ? row[cProgInterna] : null,
       };
       byId[rec.itemId] = rec;
       rawRows.push(rec);
@@ -3948,6 +4049,7 @@ function parseSheet(rows){
         und: normStr(rec.und),
         obs: normStr(rec.obs) || '',
         responsavel: normStr(rec.resp) || '',
+        programacao_interna_date: excelCellToISO(rec.progInterna),
       });
     });
 
@@ -3984,6 +4086,7 @@ function parseSheet(rows){
     const und = cUnd>=0 ? row[cUnd] : null;
     const obs = cObs>=0 ? row[cObs] : null;
     const resp = cResp>=0 ? row[cResp] : null;
+    const progInterna = cProgInterna>=0 ? row[cProgInterna] : null;
 
     const isEmpty = (item===undefined||item===null||item==='') && (cls===undefined||cls===null||cls==='') && (desc===undefined||desc===null||desc==='');
     if(isEmpty){
@@ -4010,6 +4113,7 @@ function parseSheet(rows){
       und: normStr(und),
       obs: normStr(obs) || '',
       responsavel: normStr(resp) || '',
+      programacao_interna_date: excelCellToISO(progInterna),
     });
   }
   return {items, meta:{hasPrevisao: cTerm>=0, hasReal: cTermReal>=0}};
@@ -4212,6 +4316,13 @@ const SCOPE_DEFS = [
   {key:'list', label:'Lista de Pendências', tab:'dash', selector:'#panel-items-table', unclip:true},
 ];
 
+// escopos "agrupados" — geram um arquivo separado por valor (ex: um PDF por
+// disciplina), em vez de um único arquivo
+const GROUPED_SCOPE_DEFS = [
+  {key:'list_by_disc', label:'Lista de Pendências por Disciplina', groupField:'disciplina', groupLabel:'Disciplina'},
+  {key:'list_by_resp', label:'Lista de Pendências por Responsável', groupField:'responsavel', groupLabel:'Responsável'},
+];
+
 function showToast(message, type){
   const container = document.getElementById('toast-container');
   if(!container) return;
@@ -4243,11 +4354,16 @@ function exportTitles(destination){
   return { title, sub: `${sub} · Data-base: ${fmtDate(state.today)}` };
 }
 
-async function captureScope(scopeDef, destination){
+async function prepareScopeForCapture(scopeDef, destination){
   const target = document.querySelector(scopeDef.selector);
   if(!target) throw new Error('Elemento não encontrado para o escopo ' + scopeDef.key);
 
-  // troca de aba se o escopo pedido não estiver na aba ativa no momento
+  // a animação "scroll reveal" deixa painéis com opacidade 0 até entrarem na
+  // tela ao rolar — se a pessoa exportar sem ter rolado até ali, a captura saía
+  // em branco. Força a revelação de tudo dentro do escopo antes de capturar.
+  target.classList.add('revealed');
+  target.querySelectorAll('.scroll-reveal').forEach(el=> el.classList.add('revealed'));
+
   let switchedFrom = null;
   if(scopeDef.tab){
     const activeBtn = document.querySelector('.tab-btn.active');
@@ -4259,19 +4375,12 @@ async function captureScope(scopeDef, destination){
       await new Promise(r=>setTimeout(r, 60));
     }
   }
-  // força um novo render para garantir que os gráficos fiquem com o tamanho
-  // correto (canvas que estava oculto pode ter sido medido com 0x0)
   if(scopeDef.key === 'curve') renderCurve(filtered());
   if(scopeDef.key === 'week') renderWeekChart(filtered());
+  if(scopeDef.key === 'list') renderItemsTable(filtered());
   if(scopeDef.key === 'full') renderAll();
   await new Promise(r=>setTimeout(r, 180));
 
-  // remove o recorte de altura da tabela, para capturar TODAS as linhas
-  // filtradas, não só as que estão visíveis na rolagem
-  // remove o recorte de altura de TODAS as tabelas roláveis dentro do escopo
-  // (Lista de Pendências, Programação da Semana etc podem ter mais de uma),
-  // para capturar TODAS as linhas que passam pelo filtro atual — não só as
-  // que estavam visíveis na rolagem no momento do clique
   const unclippedTables = [];
   if(scopeDef.unclip){
     target.querySelectorAll('.table-scroll').forEach(el=>{
@@ -4292,67 +4401,121 @@ async function captureScope(scopeDef, destination){
     </div>`;
   target.insertBefore(header, target.firstChild);
 
-  let canvas;
-  try{
-    canvas = await html2canvas(target, {backgroundColor:'#F1F5EC', scale:2, useCORS:true});
-  } finally {
+  const cleanup = ()=>{
     header.remove();
     unclippedTables.forEach(({el, prevMaxHeight, prevOverflow})=>{ el.style.maxHeight = prevMaxHeight; el.style.overflowY = prevOverflow; });
     if(switchedFrom){
       const backBtn = document.querySelector(`.tab-btn[data-view="${switchedFrom}"]`);
       if(backBtn) backBtn.click();
     }
+  };
+  return {target, cleanup};
+}
+
+// Captura única (usada no PNG) — reduz a escala apenas se o conteúdo for grande
+// demais pro navegador processar num canvas só, evitando imagem em branco/quebrada.
+async function captureSingleSafe(target){
+  const rawW = target.scrollWidth, rawH = target.scrollHeight;
+  const MAX_DIM = 16000, MAX_AREA = 250000000;
+  let scale = 2;
+  if(rawH * scale > MAX_DIM) scale = Math.min(scale, MAX_DIM / rawH);
+  if(rawW * scale > MAX_DIM) scale = Math.min(scale, MAX_DIM / rawW);
+  if((rawW*scale) * (rawH*scale) > MAX_AREA) scale = Math.min(scale, Math.sqrt(MAX_AREA / (rawW*rawH)));
+  scale = Math.max(scale, 0.35);
+  const canvas = await html2canvas(target, {backgroundColor:'#F1F5EC', scale, useCORS:true});
+  if(!canvas || canvas.width === 0 || canvas.height === 0){
+    throw new Error('Captura resultou em imagem vazia (0x0).');
   }
   return canvas;
 }
 
-function saveCanvasAsPdf(canvas, filename){
+// Captura página por página em ALTA qualidade fixa, pro PDF — em vez de capturar
+// o conteúdo inteiro de uma vez (o que, pra listas grandes, forçava reduzir muito
+// a escala pra não estourar o limite de canvas do navegador, deixando a imagem
+// borrada). Cada página é capturada isoladamente, sempre na mesma resolução nítida,
+// não importa quantas páginas o relatório tenha no total.
+async function capturePagesA4(target, orientation, onProgress){
+  const A4 = {p:{w:210,h:297}, l:{w:297,h:210}};
+  const dims = A4[orientation];
+  const margin = 8;
+  const printWmm = dims.w - margin*2;
+  const printHmm = dims.h - margin*2;
+
+  const contentWidthPx = target.scrollWidth;
+  const pxToMm = printWmm / contentWidthPx;
+  const chunkHeightPx = Math.max(80, Math.floor(printHmm / pxToMm));
+  const totalHeightPx = target.scrollHeight;
+  const estimatedPages = Math.max(1, Math.ceil(totalHeightPx / chunkHeightPx));
+
+  let SCALE = 2.5;
+  if(estimatedPages > 3) SCALE = 2.0;
+  if(estimatedPages > 8) SCALE = 1.4;
+  if(estimatedPages > 15) SCALE = 1.0;
+
+  const pages = [];
+  let pageNum = 0;
+  for(let y=0; y<totalHeightPx; y+=chunkHeightPx){
+    pageNum++;
+    if(onProgress && (pageNum === 1 || pageNum % 3 === 0 || pageNum === estimatedPages)) onProgress(pageNum, estimatedPages);
+    const thisChunk = Math.min(chunkHeightPx, totalHeightPx - y);
+    // usa o recorte nativo do html2canvas (x/y/width/height) em vez de mover o
+    // elemento no DOM — capturar via reposicionamento estava saindo em branco
+    const canvas = await html2canvas(target, {
+      backgroundColor:'#F1F5EC', scale: SCALE, useCORS:true,
+      x: 0, y: y, width: contentWidthPx, height: thisChunk,
+    });
+    pages.push({canvas, heightMm: thisChunk * pxToMm});
+  }
+  return {pages, printWmm, margin};
+}
+
+function buildPdfFromPages(pages, printWmm, margin, orientation, filename){
   const { jsPDF } = window.jspdf;
-  const MAX = 14000; // margem segura abaixo do limite de 14400 userUnit do jsPDF
-  if(canvas.width <= MAX && canvas.height <= MAX){
-    const orientation = canvas.width > canvas.height ? 'l' : 'p';
-    const doc = new jsPDF({orientation, unit:'px', format:[canvas.width, canvas.height]});
-    doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
-    doc.save(filename);
-    return;
-  }
-  // conteúdo muito alto (ex: lista com centenas de linhas) — pagina em fatias verticais
-  const sliceH = Math.min(MAX, 4000);
-  const pages = Math.ceil(canvas.height / sliceH);
-  let doc = null;
-  for(let i=0; i<pages; i++){
-    const y = i * sliceH;
-    const h = Math.min(sliceH, canvas.height - y);
-    const off = document.createElement('canvas');
-    off.width = canvas.width; off.height = h;
-    off.getContext('2d').drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
-    const dataUrl = off.toDataURL('image/png');
-    const orientation = canvas.width > h ? 'l' : 'p';
-    if(!doc){
-      doc = new jsPDF({orientation, unit:'px', format:[canvas.width, h]});
-    } else {
-      doc.addPage([canvas.width, h], orientation);
-    }
-    doc.addImage(dataUrl, 'PNG', 0, 0, canvas.width, h);
-  }
+  const doc = new jsPDF({orientation, unit:'mm', format:'a4'});
+  pages.forEach((p, idx)=>{
+    if(idx > 0) doc.addPage('a4', orientation);
+    const dataUrl = p.canvas.toDataURL('image/png');
+    doc.addImage(dataUrl, 'PNG', margin, margin, printWmm, p.heightMm);
+  });
   doc.save(filename);
 }
 
-async function downloadScope(scopeDef, destination, format){
-  const canvas = await captureScope(scopeDef, destination);
+async function downloadScope(scopeDef, destination, format, onProgress){
+  const {target, cleanup} = await prepareScopeForCapture(scopeDef, destination);
   const base = sanitizeForFilename(scopeDef.label) + '_' + sanitizeForFilename(destination) + '_' + state.today;
-  if(format === 'pdf'){
-    saveCanvasAsPdf(canvas, base + '.pdf');
-  } else {
-    const link = document.createElement('a');
-    link.download = base + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+  try{
+    if(format === 'pdf'){
+      const orientation = (target.scrollWidth > target.scrollHeight * 1.15) ? 'l' : 'p';
+      const {pages, printWmm, margin} = await capturePagesA4(target, orientation, onProgress);
+      buildPdfFromPages(pages, printWmm, margin, orientation, base + '.pdf');
+    } else {
+      const canvas = await captureSingleSafe(target);
+      const link = document.createElement('a');
+      link.download = base + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  } finally {
+    cleanup();
   }
 }
 
 // ---------------- Modal de exportação ----------------
-const exportState = { dest: 'relatorio', scopes: new Set(['full']), format: 'png', lockedScope: null };
+const exportState = { dest: 'relatorio', scopes: new Set(['full']), format: 'png', lockedScope: null, groupValues: {}, groupValuesStale: true };
+
+function activeFiltersSummary(){
+  const parts = [];
+  if(state.classificacoes.size) parts.push(`Classificação (${state.classificacoes.size})`);
+  if(state.disciplinas.size) parts.push(`Disciplina (${state.disciplinas.size})`);
+  if(state.status.size) parts.push(`Status (${state.status.size})`);
+  if(state.semanas.size) parts.push(`Semana (${state.semanas.size})`);
+  if(state.responsaveis.size) parts.push(`Responsável (${state.responsaveis.size})`);
+  if(state.local !== 'all') parts.push('Local');
+  if(state.search) parts.push('Busca');
+  if(state.onlyToday) parts.push('Programação hoje');
+  if(state.onlyThisWeek) parts.push('Programação semana');
+  return parts;
+}
 
 function buildExportScopeList(){
   const wrap = document.getElementById('export-scope-list');
@@ -4361,7 +4524,12 @@ function buildExportScopeList(){
     const row = document.createElement('label');
     row.className = 'export-scope-item';
     let note = '';
-    if(s.key === 'list') note = `Respeita os filtros ativos — ${filtered().length} itens`;
+    if(s.key === 'list'){
+      const filtros = activeFiltersSummary();
+      note = filtros.length
+        ? `Respeita os filtros ativos (${filtros.join(', ')}) — ${filtered().length} itens`
+        : `Sem filtros ativos — todos os ${filtered().length} itens`;
+    }
     const locked = !!exportState.lockedScope;
     const checked = locked ? (s.key === exportState.lockedScope) : exportState.scopes.has(s.key);
     if(locked && s.key !== exportState.lockedScope) row.classList.add('disabled');
@@ -4374,6 +4542,99 @@ function buildExportScopeList(){
     }
     wrap.appendChild(row);
   });
+
+  // opções agrupadas (um arquivo por disciplina/responsável) — só na exportação
+  // geral, não nos botões de exportação rápida de um painel específico
+  if(!exportState.lockedScope){
+    const base = filtered();
+    GROUPED_SCOPE_DEFS.forEach(g=>{
+      const values = [...new Set(base.map(it => g.groupField==='disciplina' ? it.disciplina : (it.responsavel || 'Não atribuído')))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      if(!exportState.groupValues[g.key] || exportState.groupValuesStale){
+        exportState.groupValues[g.key] = new Set(values); // por padrão, todos selecionados
+      }
+      const selected = exportState.groupValues[g.key];
+
+      const row = document.createElement('label');
+      row.className = 'export-scope-item';
+      const checked = exportState.scopes.has(g.key);
+      const selCount = [...selected].filter(v=>values.includes(v)).length;
+      row.innerHTML = `<input type="checkbox" data-scope-key="${g.key}">
+        <span><span class="es-label">${g.label}</span>
+        <div class="es-note">Gera ${selCount} PDF${selCount===1?'':'s'} separado${selCount===1?'':'s'} — um por ${g.groupLabel.toLowerCase()} selecionado${selCount===1?'':'s'}</div></span>`;
+      row.querySelector('input').checked = checked;
+      row.querySelector('input').addEventListener('change', e=>{
+        if(e.target.checked) exportState.scopes.add(g.key); else exportState.scopes.delete(g.key);
+        picker.style.display = e.target.checked ? 'block' : 'none';
+      });
+      wrap.appendChild(row);
+
+      // seletor de valores: "Todos" + individual, só aparece com a opção marcada
+      const picker = document.createElement('div');
+      picker.className = 'export-group-picker';
+      picker.style.display = checked ? 'block' : 'none';
+      const allChecked = values.length > 0 && values.every(v=>selected.has(v));
+      picker.innerHTML = `
+        <label class="egp-all"><input type="checkbox" class="egp-all-cb" ${allChecked?'checked':''}> Todos (${values.length})</label>
+        <div class="egp-values">
+          ${values.map(v=>`<label class="egp-value"><input type="checkbox" value="${v.replace(/"/g,'&quot;')}" ${selected.has(v)?'checked':''}> ${v}</label>`).join('')}
+        </div>`;
+      const allCb = picker.querySelector('.egp-all-cb');
+      const valueCbs = [...picker.querySelectorAll('.egp-value input')];
+      const refreshNote = ()=>{
+        const n = valueCbs.filter(cb=>cb.checked).length;
+        row.querySelector('.es-note').textContent = `Gera ${n} PDF${n===1?'':'s'} separado${n===1?'':'s'} — um por ${g.groupLabel.toLowerCase()} selecionado${n===1?'':'s'}`;
+      };
+      allCb.addEventListener('change', e=>{
+        valueCbs.forEach(cb=>{ cb.checked = e.target.checked; if(e.target.checked) selected.add(cb.value); else selected.delete(cb.value); });
+        refreshNote();
+      });
+      valueCbs.forEach(cb=>{
+        cb.addEventListener('change', e=>{
+          if(e.target.checked) selected.add(e.target.value); else selected.delete(e.target.value);
+          allCb.checked = valueCbs.every(c=>c.checked);
+          refreshNote();
+        });
+      });
+      wrap.appendChild(picker);
+    });
+    exportState.groupValuesStale = false;
+  }
+}
+
+async function downloadListByGroup(groupDef, destination, format, onProgress){
+  const listDef = SCOPE_DEFS.find(s=>s.key==='list');
+  const {target, cleanup} = await prepareScopeForCapture(listDef, destination);
+  try{
+    const baseList = filtered();
+    const valueOf = it => groupDef.groupField==='disciplina' ? it.disciplina : (it.responsavel || 'Não atribuído');
+    const selected = exportState.groupValues[groupDef.key];
+    let values = [...new Set(baseList.map(valueOf))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    if(selected) values = values.filter(v => selected.has(v));
+    let idx = 0;
+    for(const val of values){
+      idx++;
+      if(onProgress) onProgress(idx, values.length, val);
+      const subset = baseList.filter(it => valueOf(it) === val);
+      renderItemsTable(subset);
+      await new Promise(r=>setTimeout(r, 100));
+      const base = sanitizeForFilename(`Lista_Pendencias_${groupDef.groupLabel}_${val}`) + '_' + state.today;
+      if(format === 'pdf'){
+        const orientation = (target.scrollWidth > target.scrollHeight * 1.15) ? 'l' : 'p';
+        const {pages, printWmm, margin} = await capturePagesA4(target, orientation);
+        buildPdfFromPages(pages, printWmm, margin, orientation, base + '.pdf');
+      } else {
+        const canvas = await captureSingleSafe(target);
+        const link = document.createElement('a');
+        link.download = base + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+      await new Promise(r=>setTimeout(r, 500)); // dá tempo ao navegador entre downloads consecutivos
+    }
+    renderItemsTable(filtered()); // restaura a tabela ao estado normal
+  } finally {
+    cleanup();
+  }
 }
 
 function openExportModal(lockedScope){
@@ -4381,6 +4642,7 @@ function openExportModal(lockedScope){
   exportState.scopes = new Set([lockedScope || 'full']);
   exportState.dest = lockedScope === 'week' ? 'programacao' : 'relatorio';
   exportState.format = 'png';
+  exportState.groupValuesStale = true; // recalcula a lista de valores conforme os filtros atuais
 
   document.querySelectorAll('.export-choice[data-dest]').forEach(b=> b.classList.toggle('active', b.dataset.dest === exportState.dest));
   document.querySelectorAll('.export-choice[data-fmt]').forEach(b=> b.classList.toggle('active', b.dataset.fmt === exportState.format));
@@ -4411,32 +4673,247 @@ document.querySelectorAll('.export-choice[data-fmt]').forEach(btn=>{
   });
 });
 
+function updateProgressToast(text){
+  let el = document.getElementById('export-progress-toast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'export-progress-toast';
+    el.className = 'toast toast-ok';
+    document.getElementById('toast-container').appendChild(el);
+  }
+  el.innerHTML = `<span>⏳</span><span>${text}</span>`;
+}
+function removeProgressToast(){
+  const el = document.getElementById('export-progress-toast');
+  if(el) el.remove();
+}
+
 document.getElementById('export-confirm-btn').addEventListener('click', async ()=>{
   const scopes = exportState.lockedScope ? [exportState.lockedScope] : Array.from(exportState.scopes);
   if(scopes.length === 0){ alert('Selecione ao menos um item para baixar.'); return; }
-  const btn = document.getElementById('export-confirm-btn');
-  const orig = btn.textContent;
-  btn.disabled = true;
+  for(const key of scopes){
+    const groupDef = GROUPED_SCOPE_DEFS.find(g=>g.key===key);
+    if(groupDef && (!exportState.groupValues[key] || exportState.groupValues[key].size === 0)){
+      alert(`Selecione ao menos um(a) ${groupDef.groupLabel.toLowerCase()} em "${groupDef.label}".`);
+      return;
+    }
+  }
+  // fecha o modal ANTES de começar a capturar — mantê-lo aberto (com o overlay
+  // por cima da tela) deixava a geração muito mais lenta, pois o navegador
+  // precisa repintar o overlay a cada trecho capturado
+  closeExportModal();
+  updateProgressToast('Preparando exportação...');
   try{
     for(const key of scopes){
+      const groupDef = GROUPED_SCOPE_DEFS.find(g=>g.key===key);
+      if(groupDef){
+        updateProgressToast(`Gerando ${groupDef.label}...`);
+        await downloadListByGroup(groupDef, exportState.dest, exportState.format, (idx, total, val)=>{
+          updateProgressToast(`${groupDef.label}: ${val} (${idx}/${total})...`);
+        });
+        await new Promise(r=>setTimeout(r, 250));
+        continue;
+      }
       const def = SCOPE_DEFS.find(s=>s.key===key);
       if(!def) continue;
-      btn.textContent = `Gerando ${def.label}...`;
-      await downloadScope(def, exportState.dest, exportState.format);
+      updateProgressToast(`Gerando ${def.label}...`);
+      await downloadScope(def, exportState.dest, exportState.format, (pageNum, total)=>{
+        updateProgressToast(`Gerando ${def.label} (página ${pageNum}/${total})...`);
+      });
       await new Promise(r=>setTimeout(r, 250));
     }
-    closeExportModal();
+    removeProgressToast();
+    showToast('Exportação concluída', 'ok');
   } catch(err){
     console.error(err);
-    alert('Não foi possível gerar o(s) arquivo(s).');
-  } finally {
-    btn.textContent = orig; btn.disabled = false;
+    removeProgressToast();
+    showToast('Não foi possível gerar o(s) arquivo(s)', 'err');
   }
 });
 
 // ===================================================================
 // COMPARAÇÃO ENTRE REVISÕES ("o que mudou desde a última planilha")
 // ===================================================================
+// ===================================================================
+// FECHAMENTO DE PROGRAMAÇÃO — relatório de fechamento semanal
+// ===================================================================
+function computeFechamentoSemanal(list, today){
+  const {start, end} = getWeekWindow(today);
+  const previstaRealizada = [], antecipada = [], atrasada = [], naoRealizada = [];
+  list.forEach(it=>{
+    if(!it.termino_date) return; // fechamento semanal só faz sentido pra itens com previsão
+    const prevInWeek = it.termino_date >= start && it.termino_date <= end;
+    const prevBeforeWeek = it.termino_date < start;
+    const prevAfterWeek = it.termino_date > end;
+    const realInWeek = it.termino_real_date && it.termino_real_date >= start && it.termino_real_date <= end;
+
+    if(prevInWeek && realInWeek){
+      previstaRealizada.push(it);
+    } else if(realInWeek && prevAfterWeek){
+      antecipada.push(it);
+    } else if(prevBeforeWeek && (it.status !== 'concluido' || realInWeek)){
+      atrasada.push(it);
+    } else if(prevInWeek && it.status !== 'concluido'){
+      naoRealizada.push(it);
+    }
+  });
+  return {start, end, previstaRealizada, antecipada, atrasada, naoRealizada};
+}
+
+function renderFechamentoModal(){
+  const list = filtered();
+  const {start, end, previstaRealizada, antecipada, atrasada, naoRealizada} = computeFechamentoSemanal(list, state.today);
+  const code = weekLabel(mondayOf(state.today));
+  document.getElementById('fechamento-sub').textContent = `${code} · ${fmtDateShort(start)} a ${fmtDateShort(end)} · Data-base: ${fmtDate(state.today)}`;
+  document.getElementById('fech-realizada-num').textContent = previstaRealizada.length;
+  document.getElementById('fech-antecipada-num').textContent = antecipada.length;
+  document.getElementById('fech-atrasada-num').textContent = atrasada.length;
+  document.getElementById('fech-naorealizada-num').textContent = naoRealizada.length;
+
+  const rowHtml = i => `<tr>
+    <td><span class="disc-dot" style="background:${DISC_COLORS[i.disciplina]||'#8296A6'}"></span>${i.disciplina}</td>
+    <td>${i.descricao}</td>
+    <td class="num">${i.termino_date ? fmtDate(i.termino_date) : '—'}</td>
+    <td>${i.responsavel && i.responsavel!=='Não atribuído' ? i.responsavel : '<span style="color:var(--text-dim);">Não atribuído</span>'}</td>
+  </tr>`;
+  const section = (title, rows)=> rows.length===0 ? '' :
+    `<div class="diff-list"><h4>${title} (${rows.length})</h4>
+      <div class="table-scroll" style="max-height:280px;">
+        <table class="items fech-table">
+          <thead><tr><th>Disciplina</th><th>Descrição</th><th>Previsão Término</th><th>Responsável</th></tr></thead>
+          <tbody>${rows.map(rowHtml).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+
+  const listsEl = document.getElementById('fechamento-lists');
+  listsEl.innerHTML =
+    section('✅ Prevista e Realizada na Semana', previstaRealizada) +
+    section('⏩ Antecipada', antecipada) +
+    section('⏰ Atrasada (Reprogramada de Semana Anterior)', atrasada) +
+    section('⏳ Não Realizada (permanece em aberto)', naoRealizada);
+  if(previstaRealizada.length + antecipada.length + atrasada.length + naoRealizada.length === 0){
+    listsEl.innerHTML = '<div class="diff-row">Nenhuma atividade prevista, realizada ou em aberto para esta semana com os filtros atuais.</div>';
+  }
+  renderFechamentoSummary({previstaRealizada, antecipada, atrasada, naoRealizada});
+}
+
+function computeFechamentoSummary(groups){
+  const cats = [
+    ['previstaRealizada','realizada'], ['antecipada','antecipada'],
+    ['atrasada','atrasada'], ['naoRealizada','naoRealizada'],
+  ];
+  const byDisc = {}, byResp = {};
+  cats.forEach(([groupKey, catKey])=>{
+    groups[groupKey].forEach(it=>{
+      const d = it.disciplina;
+      const r = (it.responsavel && it.responsavel !== 'Não atribuído') ? it.responsavel : 'Não atribuído';
+      if(!byDisc[d]) byDisc[d] = {realizada:0, antecipada:0, atrasada:0, naoRealizada:0, total:0};
+      if(!byResp[r]) byResp[r] = {realizada:0, antecipada:0, atrasada:0, naoRealizada:0, total:0};
+      byDisc[d][catKey]++; byDisc[d].total++;
+      byResp[r][catKey]++; byResp[r].total++;
+    });
+  });
+  return {byDisc, byResp};
+}
+
+function renderFechamentoSummary(groups){
+  const {byDisc, byResp} = computeFechamentoSummary(groups);
+  const buildTable = (title, dataObj)=>{
+    const keys = Object.keys(dataObj).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    if(keys.length === 0) return '';
+    const totals = {realizada:0, antecipada:0, atrasada:0, naoRealizada:0, total:0};
+    const rows = keys.map(k=>{
+      const d = dataObj[k];
+      ['realizada','antecipada','atrasada','naoRealizada','total'].forEach(c=> totals[c]+=d[c]);
+      return `<tr><td>${k}</td><td>${d.realizada||'·'}</td><td>${d.antecipada||'·'}</td><td>${d.atrasada||'·'}</td><td>${d.naoRealizada||'·'}</td><td style="font-weight:700;color:var(--text-hi);">${d.total}</td></tr>`;
+    }).join('');
+    return `<h4 style="margin:0 0 8px;font-family:var(--disp);font-weight:700;font-size:14px;text-transform:uppercase;color:var(--navy);">${title}</h4>
+      <div class="table-scroll" style="max-height:280px;margin-bottom:6px;">
+        <table class="fech-summary-table">
+          <thead><tr><th>${title.includes('Disciplina')?'Disciplina':'Responsável'}</th><th>Realizada</th><th>Antecipada</th><th>Atrasada</th><th>Não Realiz.</th><th>Total</th></tr></thead>
+          <tbody>${rows}
+            <tr class="total-row"><td>Total</td><td>${totals.realizada}</td><td>${totals.antecipada}</td><td>${totals.atrasada}</td><td>${totals.naoRealizada}</td><td>${totals.total}</td></tr>
+          </tbody>
+        </table>
+      </div>`;
+  };
+  const el = document.getElementById('fechamento-summary');
+  const hasData = Object.keys(byDisc).length > 0;
+  el.innerHTML = hasData
+    ? buildTable('Resumo por Disciplina', byDisc) + buildTable('Resumo por Responsável', byResp)
+    : '<div class="diff-row">Nenhuma atividade prevista, realizada ou em aberto para esta semana com os filtros atuais.</div>';
+}
+
+document.querySelectorAll('.fst-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.fst-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    const sub = btn.dataset.fsub;
+    document.getElementById('fechamento-lists').classList.toggle('active', sub==='detalhado');
+    document.getElementById('fechamento-summary').classList.toggle('active', sub==='resumo');
+  });
+});
+
+document.getElementById('fechamento-open-btn').addEventListener('click', ()=>{
+  renderFechamentoModal();
+  document.getElementById('fechamento-modal-overlay').classList.add('open');
+});
+document.getElementById('fechamento-close-btn').addEventListener('click', ()=>{
+  document.getElementById('fechamento-modal-overlay').classList.remove('open');
+});
+
+async function exportFechamento(format){
+  const btnId = format === 'pdf' ? 'fechamento-export-pdf-btn' : 'fechamento-export-png-btn';
+  const btn = document.getElementById(btnId);
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Gerando...';
+  const modalEl = document.getElementById('fechamento-modal-content');
+  const actionsEl = document.getElementById('fechamento-actions');
+  const prevMaxHeight = modalEl.style.maxHeight, prevOverflow = modalEl.style.overflowY;
+  const code = weekLabel(mondayOf(state.today));
+  const base = `Fechamento_Programacao_${code}_${state.today}`;
+  try{
+    modalEl.style.maxHeight = 'none';
+    modalEl.style.overflowY = 'visible';
+    actionsEl.style.display = 'none';
+
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:14px;border-bottom:3px solid #92D050;';
+    const logoSrc = document.querySelector('.brand-mark img').src;
+    header.innerHTML = `<img src="${logoSrc}" style="height:34px;">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;color:#0B1F33;text-transform:uppercase;">Fechamento de Programação — ${code}</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#71889B;letter-spacing:0.05em;text-transform:uppercase;">Data-base: ${fmtDate(state.today)}</div>
+      </div>`;
+    modalEl.insertBefore(header, modalEl.firstChild);
+
+    if(format === 'pdf'){
+      const orientation = (modalEl.scrollWidth > modalEl.scrollHeight * 1.15) ? 'l' : 'p';
+      const {pages, printWmm, margin} = await capturePagesA4(modalEl, orientation);
+      header.remove();
+      buildPdfFromPages(pages, printWmm, margin, orientation, base + '.pdf');
+    } else {
+      const canvas = await captureSingleSafe(modalEl);
+      header.remove();
+      const link = document.createElement('a');
+      link.download = base + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+    showToast('Fechamento de Programação exportado', 'ok');
+  } catch(err){
+    console.error(err);
+    showToast('Não foi possível exportar o fechamento', 'err');
+  } finally {
+    modalEl.style.maxHeight = prevMaxHeight;
+    modalEl.style.overflowY = prevOverflow;
+    actionsEl.style.display = '';
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+document.getElementById('fechamento-export-pdf-btn').addEventListener('click', ()=> exportFechamento('pdf'));
+document.getElementById('fechamento-export-png-btn').addEventListener('click', ()=> exportFechamento('png'));
+
 function computeRevisionDiff(oldItems, newItems){
   const oldById = new Map(oldItems.map(i=>[String(i.item), i]));
   const newById = new Map(newItems.map(i=>[String(i.item), i]));
