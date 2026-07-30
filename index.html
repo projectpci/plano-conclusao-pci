@@ -388,6 +388,23 @@ select:focus, .search-input:focus{border-color:var(--info-blue);}
 .critical-alert-banner .ca-text{font-size:12.5px;color:var(--text-hi);line-height:1.4;}
 .critical-alert-banner .ca-text b{color:var(--red);}
 
+.planning-mode-banner{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;
+  background:rgba(242,179,61,0.14);border:1px solid rgba(242,179,61,0.45);border-left:3px solid var(--yellow);
+  border-radius:9px;padding:11px 16px;margin-bottom:16px;
+}
+.planning-mode-banner .pm-left{display:flex;align-items:center;gap:10px;}
+.planning-mode-banner .pm-icon{font-size:18px;color:#8A6516;flex-shrink:0;}
+.planning-mode-banner .pm-text{font-size:12.5px;color:var(--text-hi);line-height:1.4;}
+.planning-mode-banner .pm-text b{color:#8A6516;}
+.planning-mode-banner .pm-time{font-family:var(--mono);font-size:10.5px;color:#8A6516;opacity:0.85;}
+.planning-mode-banner .pm-stale{color:var(--red);font-weight:700;}
+.planning-mode-banner .pm-off-btn{
+  font-family:var(--body);font-weight:600;font-size:11.5px;color:#8A6516;background:rgba(255,255,255,0.6);
+  border:1px solid rgba(242,179,61,0.6);border-radius:100px;padding:5px 12px;cursor:pointer;white-space:nowrap;
+}
+.planning-mode-banner .pm-off-btn:hover{background:#fff;}
+
 /* ================= IMPRESSÃO NATIVA DO NAVEGADOR ================= */
 @media print{
   #gate, .topbar, .filterbar, #critical-alert-banner,
@@ -1122,6 +1139,8 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
 </div>
 
 <div class="page">
+
+  <div id="planning-mode-banner" class="planning-mode-banner" style="display:none;"></div>
 
   <!-- ============ SHARED FILTER BAR (dropdowns) ============ -->
   <div id="critical-alert-banner" class="critical-alert-banner" style="display:none;"></div>
@@ -2038,6 +2057,23 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
             <div class="settings-section-title">📋 Fechamento de Programação</div>
             <p class="panel-note" style="margin:0 0 10px;">Classifica as atividades da semana em Realizadas, Antecipadas, Atrasadas e Não Realizadas — pronto pra exportar.</p>
             <button class="admin-action-btn" id="fechamento-open-btn">📋 Gerar Fechamento de Programação</button>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-title">🔧 Modo Planejamento</div>
+            <p class="panel-note" style="margin:0 0 10px;">Avisa quem está no modo Visualização que os dados estão sendo atualizados no momento — evita que alguém tire conclusão de um número pela metade.</p>
+            <div class="admin-action-item">
+              <span class="aa-label">Ativar aviso de atualização em andamento</span>
+              <label class="pt-switch">
+                <input type="checkbox" id="planning-mode-toggle">
+                <span class="pt-slider"></span>
+              </label>
+              <span class="aa-hint" id="planning-mode-sub">desligado</span>
+            </div>
+            <label class="cgp-field" style="display:block;margin-top:10px;">
+              <span style="display:block;margin-bottom:5px;font-size:11.5px;color:var(--text-lo);">Mensagem (opcional — some quando desligar)</span>
+              <input type="text" id="planning-mode-message" class="search-input" style="width:100%;" placeholder="ex: Atualizando pendências da Sem 96, volto até 15h">
+            </label>
           </div>
         </div>
 
@@ -3304,6 +3340,75 @@ function computeCriticalAlert(){
   try{ localStorage.setItem('pci_critical_snapshot', JSON.stringify(criticalIds)); } catch(e){}
   return {total: criticalIds.length, newCount: newOnes.length};
 }
+// ===================================================================
+// MODO PLANEJAMENTO — aviso para quem está em modo Visualização de que
+// os dados estão sendo atualizados no momento (ex: durante um upload
+// grande ou uma edição em lote), pra ninguém tirar conclusão de números
+// pela metade. Sincronizado em tempo real, igual as demais configurações.
+// ===================================================================
+state.modoPlanejamento = {ativo:false, mensagem:'', ativado_em:null};
+let planningModeTimer = null;
+function renderPlanningBanner(){
+  const el = document.getElementById('planning-mode-banner');
+  if(!el) return;
+  const pm = state.modoPlanejamento;
+  if(!pm || !pm.ativo){ el.style.display = 'none'; if(planningModeTimer){ clearInterval(planningModeTimer); planningModeTimer = null; } return; }
+
+  const msg = (pm.mensagem && pm.mensagem.trim()) ? pm.mensagem.trim() : 'os dados podem estar temporariamente incompletos.';
+  const ativadoEm = pm.ativado_em ? new Date(pm.ativado_em) : null;
+  const horaTexto = ativadoEm ? ativadoEm.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) : '';
+  const elapsedMs = ativadoEm ? (Date.now() - ativadoEm.getTime()) : 0;
+  const elapsedH = elapsedMs / 3600000;
+  const isStale = elapsedH >= 2;
+  const elapsedTexto = elapsedH >= 1 ? `${Math.floor(elapsedH)}h${String(Math.round((elapsedH%1)*60)).padStart(2,'0')}` : `${Math.round(elapsedMs/60000)}min`;
+
+  const offBtn = state.role === 'admin' ? `<button class="pm-off-btn" id="planning-mode-off-btn">Desativar</button>` : '';
+  el.innerHTML = `
+    <div class="pm-left">
+      <span class="pm-icon">🔧</span>
+      <span class="pm-text"><b>Painel em atualização</b> — ${msg}${horaTexto ? ` <span class="pm-time">· ativado às ${horaTexto}${isStale ? ` · <span class="pm-stale">⏱ ligado há ${elapsedTexto} — ainda em atualização?</span>` : ` · ligado há ${elapsedTexto}`}</span>` : ''}</span>
+    </div>
+    ${offBtn}
+  `;
+  el.style.display = 'flex';
+  document.getElementById('planning-mode-off-btn')?.addEventListener('click', ()=> setPlanningMode(false, ''));
+
+  if(!planningModeTimer) planningModeTimer = setInterval(renderPlanningBanner, 60000); // atualiza o "ligado há Xh" a cada minuto
+}
+async function setPlanningMode(ativo, mensagem){
+  state.modoPlanejamento = {
+    ativo,
+    mensagem: mensagem || '',
+    ativado_em: ativo ? new Date().toISOString() : state.modoPlanejamento.ativado_em,
+  };
+  renderPlanningBanner();
+  await saveConfig('modo_planejamento', state.modoPlanejamento);
+  const toggle = document.getElementById('planning-mode-toggle');
+  const sub = document.getElementById('planning-mode-sub');
+  if(toggle) toggle.checked = ativo;
+  if(sub) sub.textContent = ativo ? 'ligado' : 'desligado';
+}
+async function fetchPlanningMode(){
+  const valor = await fetchConfig('modo_planejamento');
+  if(valor && typeof valor === 'object'){
+    state.modoPlanejamento = valor;
+    const toggle = document.getElementById('planning-mode-toggle');
+    const sub = document.getElementById('planning-mode-sub');
+    const msgInput = document.getElementById('planning-mode-message');
+    if(toggle) toggle.checked = !!valor.ativo;
+    if(sub) sub.textContent = valor.ativo ? 'ligado' : 'desligado';
+    if(msgInput) msgInput.value = valor.mensagem || '';
+  }
+  renderPlanningBanner();
+}
+document.getElementById('planning-mode-toggle')?.addEventListener('change', e=>{
+  const mensagem = document.getElementById('planning-mode-message')?.value || '';
+  setPlanningMode(e.target.checked, mensagem);
+});
+document.getElementById('planning-mode-message')?.addEventListener('change', e=>{
+  if(state.modoPlanejamento.ativo) setPlanningMode(true, e.target.value);
+});
+
 function renderCriticalAlert(){
   const el = document.getElementById('critical-alert-banner');
   if(!el) return;
@@ -3580,6 +3685,15 @@ function setupPanelVisibilityRealtime(){
       } else if(chave === 'hist_titulo' && valor){
         const el = document.getElementById('hist-title');
         if(el) el.textContent = valor;
+      } else if(chave === 'modo_planejamento' && valor){
+        state.modoPlanejamento = valor;
+        const toggle = document.getElementById('planning-mode-toggle');
+        const sub = document.getElementById('planning-mode-sub');
+        const msgInput = document.getElementById('planning-mode-message');
+        if(toggle) toggle.checked = !!valor.ativo;
+        if(sub) sub.textContent = valor.ativo ? 'ligado' : 'desligado';
+        if(msgInput) msgInput.value = valor.mensagem || '';
+        renderPlanningBanner();
       } else if(chave === 'plano_aprovado_em'){
         state.planoAprovadoEm = valor || null;
         updatePlanoToggleUI();
@@ -7014,6 +7128,7 @@ async function bootstrap(){
     await fetchChartPrefs();
     await fetchBrandTexto();
     await fetchHistTitulo();
+    await fetchPlanningMode();
     const savedValType = await fetchConfig('hist_value_type');
     if(savedValType === 'horas' || savedValType === 'efetivo'){
       state.histValueType = savedValType;
