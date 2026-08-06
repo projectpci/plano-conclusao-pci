@@ -4473,14 +4473,17 @@ function buildDayChartConfig(scoped){
         { name:'Real', data: discs.map(d=>realCounts[d]||0) },
       ],
       colors:['#002B5C', '#92D050'],
-      plotOptions:{ bar:{ horizontal:false, borderRadius:6, columnWidth:'62%', dataLabels:{ position:'top' } } },
+      plotOptions:{ bar:{ horizontal:false, borderRadius:6, columnWidth:'62%', dataLabels:{ position: apexBarLabelPosition(style.position) } } },
       xaxis:{ categories: discs, labels:{style:{colors:'#0B1F33', fontFamily:'Inter', fontSize:'13px', fontWeight:600}} },
       yaxis:{ labels:{style:{colors:'#3E5468', fontFamily:'IBM Plex Mono', fontSize:'11px'}}, forceNiceScale:true },
       legend:{ position:'top', horizontalAlign:'center', labels:{colors:'#0B1F33'}, fontSize:'13px', fontWeight:600, fontFamily:'Inter', markers:{radius:4} },
       // rótulos sempre visíveis, sem depender de hover — pensado pra
-      // apresentação em reunião, onde ninguém vai passar o mouse no gráfico
-      dataLabels:{ enabled:true, offsetY:-6, style:{fontSize:'13px', colors:['#0B1F33'], fontFamily:'Inter', fontWeight:700} },
-      grid:{ borderColor:'rgba(217,232,206,0.5)', strokeDashArray:3 },
+      // apresentação em reunião, onde ninguém vai passar o mouse no gráfico.
+      // offsetY negativo grande + espaço reservado no topo do grid: garante
+      // que o número fique claramente ACIMA da coluna, não colado/dentro dela
+      dataLabels:{ enabled:true, offsetY: style.position==='above' ? -18 : (style.position==='below' ? 18 : 0),
+        style:{fontSize:style.size+'px', colors:[style.color], fontFamily:'Inter', fontWeight:700} },
+      grid:{ borderColor:'rgba(217,232,206,0.5)', strokeDashArray:3, padding:{top: style.position==='above' ? 22 : 0} },
       tooltip:{ theme:'light' },
     }
   };
