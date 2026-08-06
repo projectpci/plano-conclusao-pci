@@ -448,6 +448,9 @@ select:focus, .search-input:focus{border-color:var(--info-blue);}
 .cgp-adjust-toggle.open .cgp-caret{transform:rotate(180deg);}
 .cgp-divider{height:1px;background:var(--border-soft);margin:6px 2px;}
 .cgp-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;font-size:12.5px;color:var(--text-hi);}
+.cgp-curve-labels-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.03em;color:var(--text-dim);padding:6px 8px 2px;}
+.cgp-row-check{display:flex;align-items:center;gap:8px;padding:5px 8px;font-size:12px;color:var(--text-hi);cursor:pointer;}
+.cgp-row-check input{width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;}
 .cgp-adjust-body{display:none;padding:6px 8px 4px;border-top:1px solid var(--border-soft);margin-top:4px;}
 .cgp-adjust-body.open{display:block;}
 .cgp-field{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--text-lo);padding:5px 0;}
@@ -983,10 +986,14 @@ body.role-viewer .role-badge .rb-dot{background:rgba(255,255,255,0.4);}
 .prog-clear-btn:hover{border-color:var(--red);color:var(--red);background:rgba(229,72,77,0.06);}
 
 table.prog-aderencia-table td, table.prog-aderencia-table th{text-align:center;}
+table.prog-aderencia-table td.num{text-align:center;}
 table.prog-aderencia-table thead th{text-align:center;white-space:normal;vertical-align:middle;line-height:1.4;max-width:140px;}
 table.prog-aderencia-table tbody td{vertical-align:middle;}
 table.prog-aderencia-table th:first-child, table.prog-aderencia-table td:first-child{text-align:left;max-width:none;}
 table.prog-aderencia-table .pa-resp{font-weight:600;color:var(--text-hi);}
+.pa-total-row{border-top:2px solid var(--navy);background:var(--surface-2);}
+.pa-total-row td{font-weight:700;}
+.pa-total-row .pa-resp{color:var(--navy);}
 .pa-bar-cell{display:flex;align-items:center;gap:10px;min-width:180px;max-width:260px;margin:0 auto;}
 .pa-bar-track{flex:1;height:10px;border-radius:100px;background:var(--panel-bg);border:1px solid var(--border-soft);overflow:hidden;}
 .pa-bar-fill{height:100%;border-radius:100px;transition:width .3s ease;}
@@ -1002,6 +1009,17 @@ table.prog-aderencia-table .pa-resp{font-weight:600;color:var(--text-hi);}
 }
 #fdrop-hist-disc .fdrop-btn{min-width:auto;}
 .egp-picker-panel{padding:10px;}
+.fc-panel-title{font-family:var(--disp);font-weight:700;font-size:12.5px;color:var(--navy);padding:2px 4px 2px;}
+.fc-panel-note{font-size:10.5px;color:var(--text-dim);padding:0 4px 8px;line-height:1.4;}
+.fc-group{padding:8px 4px;border-top:1px solid var(--border-soft);}
+.fc-group:first-of-type{border-top:none;}
+.fc-group-title{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-dim);margin-bottom:5px;}
+.fc-panel-actions{padding:8px 4px 2px;border-top:1px solid var(--border-soft);margin-top:4px;}
+.fc-reset-btn{
+  width:100%;font-family:var(--body);font-weight:600;font-size:11.5px;color:var(--navy);
+  background:var(--panel-bg);border:1px solid var(--border);border-radius:7px;padding:7px;cursor:pointer;
+}
+.fc-reset-btn:hover{background:rgba(146,208,80,0.15);border-color:var(--green);}
 .egp-picker-panel .egp-all{
   display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--navy);
   padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--border-soft);cursor:pointer;
@@ -1060,6 +1078,11 @@ body.role-viewer [data-role-only="viewer"]{display:flex;}
 .ms-date{font-family:var(--mono);font-size:10.5px;color:var(--text-dim);}
 .ms-name{font-size:12.5px;color:var(--text-hi);text-align:center;margin-top:3px;line-height:1.35;font-weight:500;}
 .ms-status{margin-top:6px;}
+.ms-progress{width:100%;max-width:150px;margin-top:10px;text-align:center;}
+.ms-progress-track{height:6px;border-radius:100px;background:var(--panel-bg);border:1px solid var(--border-soft);overflow:hidden;}
+.ms-progress-fill{height:100%;border-radius:100px;transition:width .3s ease;}
+.ms-progress-label{display:block;font-family:var(--mono);font-size:9.5px;color:var(--text-dim);margin-top:4px;}
+.ms-progress-sub{color:var(--text-dim);opacity:0.7;}
 
 .heatmap-scroll{overflow-x:auto;}
 .heatmap-pair{display:flex;gap:24px;align-items:flex-start;}
@@ -1198,34 +1221,38 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
       <div style="display:flex;align-items:center;gap:10px;">
         <button class="filterbar-pin-btn active" id="filterbar-pin-btn" title="Fixar a barra de filtros no topo ao rolar a página">📌 Fixado</button>
         <div class="result-count"><b id="result-count">735</b> / <span id="result-total">735</span> itens</div>
+        <div class="fdrop" id="fdrop-filter-config">
+          <button class="gear-btn" id="filter-config-btn" title="Escolher quais filtros aparecem">⚙</button>
+          <div class="fdrop-panel" id="filter-config-panel" style="right:0;left:auto;width:250px;max-height:400px;overflow-y:auto;"></div>
+        </div>
       </div>
     </div>
     <div class="filterbar-controls" id="filterbar-controls">
-      <div class="fdrop" id="fdrop-class">
+      <div class="fdrop" id="fdrop-class" data-filter-key="class">
         <button class="fdrop-btn" data-target="class">Classificação <span class="caret">▾</span></button>
         <div class="fdrop-panel" id="fdrop-panel-class"></div>
       </div>
-      <div class="fdrop" id="fdrop-disc">
+      <div class="fdrop" id="fdrop-disc" data-filter-key="disc">
         <button class="fdrop-btn" data-target="disc">Disciplina <span class="caret">▾</span></button>
         <div class="fdrop-panel" id="fdrop-panel-disc"></div>
       </div>
-      <div class="fdrop" id="fdrop-status">
+      <div class="fdrop" id="fdrop-status" data-filter-key="status">
         <button class="fdrop-btn" data-target="status">Status do prazo <span class="caret">▾</span></button>
         <div class="fdrop-panel" id="fdrop-panel-status"></div>
       </div>
-      <div class="fdrop" id="fdrop-semana">
+      <div class="fdrop" id="fdrop-semana" data-filter-key="semana">
         <button class="fdrop-btn" data-target="semana">Semana <span class="caret">▾</span></button>
         <div class="fdrop-panel" id="fdrop-panel-semana"></div>
       </div>
-      <div class="fdrop" id="fdrop-responsavel">
+      <div class="fdrop" id="fdrop-responsavel" data-filter-key="responsavel">
         <button class="fdrop-btn" data-target="responsavel">Responsável <span class="caret">▾</span></button>
         <div class="fdrop-panel" id="fdrop-panel-responsavel"></div>
       </div>
-      <button class="fdrop-btn" id="today-filter-btn" title="Mostra o que vence até a data-base (inclui atrasados) e o que foi concluído hoje">📅 Programação hoje</button>
-      <button class="fdrop-btn" id="week-filter-btn" title="Mostra o que vence até o fim da semana da data-base (inclui atrasados) e o que foi concluído nesta semana">🗓 Programação semana</button>
-      <select id="sel-local"><option value="all">Todos os locais</option></select>
-      <input class="search-input" id="search-input" type="text" placeholder="Buscar descrição, local...">
-      <button class="reset-btn" id="reset-btn">✕ Limpar</button>
+      <button class="fdrop-btn" id="today-filter-btn" data-filter-key="hoje" title="Mostra o que vence até a data-base (inclui atrasados) e o que foi concluído hoje">📅 Programação hoje</button>
+      <button class="fdrop-btn" id="week-filter-btn" data-filter-key="semanaProg" title="Mostra o que vence até o fim da semana da data-base (inclui atrasados) e o que foi concluído nesta semana">🗓 Programação semana</button>
+      <select id="sel-local" data-filter-key="local"><option value="all">Todos os locais</option></select>
+      <input class="search-input" id="search-input" data-filter-key="busca" type="text" placeholder="Buscar descrição, local...">
+      <button class="reset-btn" id="reset-btn" title="Limpar todos os filtros">✕</button>
     </div>
   </div>
 
@@ -1255,10 +1282,11 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
               <button class="cgp-action" data-action="download">⭳ Baixar</button>
               <button class="cgp-action" data-action="expand">⤢ Expandir</button>
               <div class="cgp-divider"></div>
-              <div class="cgp-row">
-                <span>🏷️ Rótulos</span>
-                <label class="pt-switch"><input type="checkbox" class="cgp-labels-toggle"><span class="pt-slider"></span></label>
-              </div>
+              <div class="cgp-curve-labels-title">🏷️ Rótulos — escolha onde aplicar</div>
+              <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="previsto"> Previsto (coluna)</label>
+              <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="real"> Real (coluna)</label>
+              <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="previstoAcum"> Previsto Acumulado (linha)</label>
+              <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="realAcum"> Real Acumulado (linha)</label>
               <button class="cgp-action cgp-adjust-toggle">🎨 Ajustar rótulos <span class="cgp-caret">▾</span></button>
               <div class="cgp-adjust-body">
                 <label class="cgp-field">Tamanho <input type="range" class="cgp-size" min="8" max="18" step="0.5"><span class="cgp-size-val"></span></label>
@@ -1378,20 +1406,16 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
     <div class="panel scroll-reveal" style="margin-top:16px;">
       <div class="panel-head">
         <div class="panel-title">Aderência por Responsável</div>
+        <div class="fdrop" id="fdrop-ader-cols">
+          <button class="gear-btn" id="ader-cols-btn" title="Escolher quais colunas aparecem">⚙</button>
+          <div class="fdrop-panel" id="ader-cols-panel" style="right:0;left:auto;width:220px;"></div>
+        </div>
       </div>
       <p class="panel-note">Ranking de quem entregou o previsto da semana — ajuda a identificar onde reforçar o acompanhamento junto ao supervisor.</p>
       <div id="prog-aderencia-empty" class="notes-empty" style="display:none;padding:20px 0;text-align:center;">Nenhuma atividade prevista para a semana corrente com os filtros atuais.</div>
       <div class="table-scroll" id="prog-aderencia-wrap">
         <table class="items prog-aderencia-table">
-          <thead>
-            <tr>
-              <th>Responsável</th>
-              <th>Previsto (Semana)</th>
-              <th>Real (Semana)</th>
-              <th>Acumulado até a Data-Base</th>
-              <th>Aderência (Semana)</th>
-            </tr>
-          </thead>
+          <thead><tr id="prog-aderencia-head"></tr></thead>
           <tbody id="prog-aderencia-body"></tbody>
         </table>
       </div>
@@ -1399,7 +1423,47 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
 
     <div class="panel scroll-reveal" style="margin-top:16px;">
       <div class="panel-head">
+        <div class="panel-title">Programação do Dia por Disciplina</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="week-range" id="progday-label"></span>
+          <div class="chart-gear" data-chart-key="progday">
+            <button class="chart-gear-btn" title="Configurações do gráfico">⚙</button>
+            <div class="chart-gear-panel">
+              <button class="cgp-action" data-action="download">⭳ Baixar</button>
+              <button class="cgp-action" data-action="expand">⤢ Expandir</button>
+              <div class="cgp-divider"></div>
+              <div class="cgp-row">
+                <span>🏷️ Rótulos</span>
+                <label class="pt-switch"><input type="checkbox" class="cgp-labels-toggle"><span class="pt-slider"></span></label>
+              </div>
+              <button class="cgp-action cgp-adjust-toggle">🎨 Ajustar rótulos <span class="cgp-caret">▾</span></button>
+              <div class="cgp-adjust-body">
+                <label class="cgp-field">Tamanho <input type="range" class="cgp-size" min="8" max="18" step="0.5"><span class="cgp-size-val"></span></label>
+                <label class="cgp-field">Cor <input type="color" class="cgp-color"></label>
+                <label class="cgp-field">Posição
+                  <select class="cgp-position">
+                    <option value="above">Acima</option>
+                    <option value="below">Abaixo</option>
+                    <option value="center">Centro</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="panel-note">Previsto x Real por disciplina, somente para o dia da data-base selecionada.</p>
+      <div id="progday-empty" class="empty-state" style="display:none;">Nenhuma atividade (prevista ou realizada) neste dia.</div>
+      <div class="chart-wrap" id="progday-wrap" style="height:320px;"><div id="chart-progday"></div></div>
+    </div>
+
+    <div class="panel scroll-reveal" style="margin-top:16px;">
+      <div class="panel-head">
         <div class="panel-title">Lista de Pendências da Semana</div>
+        <div class="fdrop" id="fdrop-prog-cols">
+          <button class="gear-btn" id="prog-cols-btn" title="Escolher quais colunas aparecem">⚙</button>
+          <div class="fdrop-panel" id="prog-cols-panel" style="right:0;left:auto;width:220px;"></div>
+        </div>
       </div>
       <div class="table-scroll">
         <table class="items">
@@ -1930,10 +1994,11 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
         <div class="chart-gear-panel">
           <button class="cgp-action" data-action="download">⭳ Baixar</button>
           <div class="cgp-divider"></div>
-          <div class="cgp-row">
-            <span>🏷️ Rótulos</span>
-            <label class="pt-switch"><input type="checkbox" class="cgp-labels-toggle"><span class="pt-slider"></span></label>
-          </div>
+          <div class="cgp-curve-labels-title">🏷️ Rótulos — escolha onde aplicar</div>
+          <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="previsto"> Previsto (coluna)</label>
+          <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="real"> Real (coluna)</label>
+          <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="previstoAcum"> Previsto Acumulado (linha)</label>
+          <label class="cgp-row-check"><input type="checkbox" class="cgp-curve-label-series" data-series="realAcum"> Real Acumulado (linha)</label>
           <button class="cgp-action cgp-adjust-toggle">🎨 Ajustar rótulos <span class="cgp-caret">▾</span></button>
           <div class="cgp-adjust-body">
             <label class="cgp-field">Tamanho <input type="range" class="cgp-size" min="8" max="18" step="0.5"><span class="cgp-size-val"></span></label>
@@ -2195,7 +2260,20 @@ table.heatmap .hm-cell{width:44px;height:32px;font-family:var(--mono);color:#0B1
           </div>
 
           <div class="settings-section">
-            <div class="settings-section-title">🔧 Modo Planejamento</div>
+            <div class="settings-section-title">🎯 Meta Interna</div>
+            <p class="panel-note" style="margin:0 0 10px;">Quando ligada, <b>todos os cálculos do painel</b> passam a usar a coluna <b>Data Programação Interna</b> no lugar da Previsão de Término oficial — um prazo mais conservador, garantindo folga antes do prazo real. Abrange: status/curva/SPI, Marcos do Projeto, Heatmap (Previsto), Lista de Pendências, Alerta de Pendências e Desempenho de Prazo. Desligada, volta a usar a Previsão de Término normalmente. Não precisa recarregar a planilha pra alternar.</p>
+            <div class="admin-action-item">
+              <span class="aa-label">Usar Data Programação Interna nos cálculos</span>
+              <label class="pt-switch">
+                <input type="checkbox" id="meta-interna-toggle">
+                <span class="pt-slider"></span>
+              </label>
+              <span class="aa-hint" id="meta-interna-sub">desligado</span>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-section-title">🔧 Modo Atualização</div>
             <p class="panel-note" style="margin:0 0 10px;">Avisa quem está no modo Visualização que os dados estão sendo atualizados no momento — evita que alguém tire conclusão de um número pela metade.</p>
             <div class="admin-action-item">
               <span class="aa-label">Ativar aviso de atualização em andamento</span>
@@ -2879,6 +2957,7 @@ function dbRowToItem(row){
     responsavel: row.responsavel || '',
     criado_em: row.criado_em || null,
     programacao_interna_date: row.programacao_interna_date || null,
+    termino_real_date_interno: row.termino_real_date_interno || null,
   };
 }
 function itemToDbRow(it){
@@ -2896,11 +2975,12 @@ function itemToDbRow(it){
     obs: it.obs || null,
     responsavel: (it.responsavel && it.responsavel !== 'Não atribuído') ? it.responsavel : null,
     programacao_interna_date: it.programacao_interna_date || null,
+    termino_real_date_interno: it.termino_real_date_interno || null,
     updated_at: new Date().toISOString(),
   };
 }
-function dbRowToMilestone(row){ return {id: row.id, nome: row.nome, termino_date: row.termino_date}; }
-function milestoneToDbRow(m){ return {id: String(m.id), nome: m.nome, termino_date: m.termino_date || null}; }
+function dbRowToMilestone(row){ return {id: row.id, nome: row.nome, termino_date: row.termino_date, programacao_interna_date: row.programacao_interna_date || null}; }
+function milestoneToDbRow(m){ return {id: String(m.id), nome: m.nome, termino_date: m.termino_date || null, programacao_interna_date: m.programacao_interna_date || null}; }
 
 async function chunkedUpsert(table, rows, chunkSize){
   chunkSize = chunkSize || 200;
@@ -3026,7 +3106,45 @@ function isItemNovo(it){
   return new Date(it.criado_em).getTime() > new Date(state.planoAprovadoEm).getTime();
 }
 
+state.metaInterna = false;
+// "Meta Interna": quando ativa, todos os cálculos passam a usar a Data de
+// Programação Interna no lugar da Previsão de Término oficial — um prazo
+// mais conservador/antecipado, usado internamente pelo planejamento. O valor
+// oficial fica guardado em termino_date_oficial e nunca é perdido, então dá
+// pra ligar/desligar a qualquer momento sem recarregar a planilha.
+function applyMetaInterna(items){
+  items.forEach(it=>{
+    if(it.termino_date_oficial === undefined) it.termino_date_oficial = it.termino_date;
+    if(it.termino_real_date_oficial === undefined) it.termino_real_date_oficial = it.termino_real_date;
+    it.termino_date = state.metaInterna
+      ? (it.programacao_interna_date || it.termino_date_oficial)
+      : it.termino_date_oficial;
+    // "Data Real - Interno" — baixa registrada internamente, pode ser
+    // diferente/mais cedo que a baixa oficial. Se não existir, mantém a
+    // baixa oficial (não força um item "sem baixa interna" a voltar a
+    // ficar em aberto).
+    it.termino_real_date = state.metaInterna
+      ? (it.termino_real_date_interno || it.termino_real_date_oficial)
+      : it.termino_real_date_oficial;
+  });
+  // Marcos do Projeto também seguem a Meta Interna. Se o próprio marco não tem
+  // uma Data Programação Interna preenchida na planilha (comum — só as linhas
+  // WP costumam ter essa coluna preenchida), usa a maior data interna entre os
+  // itens que pertencem a ele (mesmo prefixo de WBS) em vez de cair direto pra
+  // data oficial — assim o marco não "avança" além do que os próprios itens
+  // internos indicam.
+  (MILESTONES || []).forEach(m=>{
+    if(m.termino_date_oficial === undefined) m.termino_date_oficial = m.termino_date;
+    if(!state.metaInterna){ m.termino_date = m.termino_date_oficial; return; }
+    if(m.programacao_interna_date){ m.termino_date = m.programacao_interna_date; return; }
+    const prefix = m.id + '.';
+    const children = items.filter(it => it.item && (String(it.item) === String(m.id) || String(it.item).startsWith(prefix)));
+    const childDates = children.map(it => it.termino_date).filter(Boolean);
+    m.termino_date = childDates.length ? childDates.reduce((a,b)=> a > b ? a : b) : m.termino_date_oficial;
+  });
+}
 function computeSummary(items, today){
+  applyMetaInterna(items);
   const disc_counts = {}, class_counts = {}, local_set = new Set(), semana_counts = {}, resp_counts = {};
   let n_vencido=0, n_a_vencer=0, n_sem_data=0, n_concluido=0;
   items.forEach(it=>{
@@ -3074,7 +3192,11 @@ function matches(it){
   }
   if(state.onlyThisWeek){
     const {start, end} = getWeekWindow(state.today);
-    if(!it.termino_date || it.termino_date < start || it.termino_date > end) return false;
+    // mesma lógica rolante do gráfico "Programação da Semana por Disciplina":
+    // inclui backlog vencido ainda não concluído, não conta de novo quem já
+    // foi fechado numa semana anterior, e não deixa entrar previsão futura
+    if(!it.termino_date || it.termino_date > end) return false;
+    if(it.termino_real_date && it.termino_real_date < start) return false;
   }
   if(state.local !== 'all' && it.local !== state.local) return false;
   if(state.search){
@@ -3100,19 +3222,19 @@ function filteredIgnoringPeriodToggles(){
 // ===================================================================
 // FILTER UI (dropdowns) — rebuilt whenever the dataset changes
 // ===================================================================
+function colLabel(col){ return typeof col.label === 'function' ? col.label() : col.label; }
 const COLUMN_DEFS = [
   {key:'item', label:'Item'},
   {key:'classificacao', label:'Classificação'},
   {key:'local', label:'Local'},
   {key:'disciplina', label:'Disciplina'},
   {key:'descricao', label:'Descrição', mandatory:true},
-  {key:'termino_sort', label:'Previsão Término'},
+  {key:'termino_sort', label:()=> state.metaInterna ? 'Data Programação int.' : 'Data Prevista de Término', mandatory:true},
   {key:'programacao_dia', label:'Dia da Semana'},
   {key:'semana_prevista', label:'Semana'},
-  {key:'termino_real_date', label:'Baixa (Data Real)'},
+  {key:'termino_real_date', label:()=> state.metaInterna ? 'Data Real Int.' : 'Data Real'},
   {key:'qtd', label:'QTD'},
   {key:'responsavel', label:'Responsável'},
-  {key:'programacao_interna', label:'Data Programação Interna'},
   {key:'status', label:'Status', mandatory:true},
 ];
 state.columnOrder = COLUMN_DEFS.map(c=>c.key);
@@ -3195,7 +3317,8 @@ function buildChips(){
 function getOrderedVisibleColumns(){
   return state.columnOrder
     .map(k => COLUMN_DEFS.find(c=>c.key===k))
-    .filter(c => c && (c.mandatory || state.visibleColumns.has(c.key)));
+    .filter(c => c && (c.mandatory || state.visibleColumns.has(c.key)))
+    .filter(c => !c.onlyMetaInterna || state.metaInterna);
 }
 
 let colDragKey = null;
@@ -3215,7 +3338,7 @@ function buildColumnPanel(){
     row.innerHTML = `
       <span class="col-drag-handle" title="Arraste para reordenar">⠿</span>
       <label style="display:flex;align-items:center;gap:8px;flex:1;cursor:pointer;">
-        ${checkboxHtml} <span>${col.label}</span>
+        ${checkboxHtml} <span>${colLabel(col)}</span>
       </label>
       <button class="col-move-btn" data-move="up" data-key="${col.key}" title="Mover para cima" ${idx===0?'disabled':''}>↑</button>
       <button class="col-move-btn" data-move="down" data-key="${col.key}" title="Mover para baixo" ${idx===state.columnOrder.length-1?'disabled':''}>↓</button>
@@ -3667,6 +3790,32 @@ async function fetchPlanoConfig(){
   if(valor) state.planoAprovadoEm = valor;
   updatePlanoToggleUI();
 }
+function updateMetaInternaToggleUI(){
+  const input = document.getElementById('meta-interna-toggle');
+  const sub = document.getElementById('meta-interna-sub');
+  if(input) input.checked = state.metaInterna;
+  if(sub) sub.textContent = state.metaInterna ? 'ligado — usando Data Programação Interna' : 'desligado — usando Previsão de Término';
+}
+function wireMetaInternaToggle(){
+  const input = document.getElementById('meta-interna-toggle');
+  if(!input) return;
+  input.addEventListener('change', e=>{
+    state.metaInterna = e.target.checked;
+    applyMetaInterna(ITEMS);
+    SUM = computeSummary(ITEMS, state.today);
+    updateMetaInternaToggleUI();
+    renderAll();
+    renderExecSummary();
+    renderCriticalAlert();
+    if(document.getElementById('view-prog')?.classList.contains('active')) renderProgramacao();
+    saveConfig('meta_interna', state.metaInterna);
+  });
+}
+async function fetchMetaInterna(){
+  const valor = await fetchConfig('meta_interna');
+  if(typeof valor === 'boolean') state.metaInterna = valor;
+  updateMetaInternaToggleUI();
+}
 function wirePlanoToggle(){
   const input = document.getElementById('plano-toggle-input');
   if(!input) return;
@@ -3835,6 +3984,19 @@ function setupPanelVisibilityRealtime(){
         if(sub) sub.textContent = valor.ativo ? 'ligado' : 'desligado';
         if(msgInput) msgInput.value = valor.mensagem || '';
         renderPlanningBanner();
+      } else if(chave === 'filter_visibility' && valor){
+        state.filterVisibility = valor;
+        buildFilterConfigPanel();
+        applyFilterVisibility();
+      } else if(chave === 'meta_interna'){
+        state.metaInterna = !!valor;
+        applyMetaInterna(ITEMS);
+        SUM = computeSummary(ITEMS, state.today);
+        updateMetaInternaToggleUI();
+        renderAll();
+        renderExecSummary();
+        renderCriticalAlert();
+        if(document.getElementById('view-prog')?.classList.contains('active')) renderProgramacao();
       } else if(chave === 'plano_aprovado_em'){
         state.planoAprovadoEm = valor || null;
         updatePlanoToggleUI();
@@ -4074,6 +4236,187 @@ function computeCriticalAlertReadOnly(){
 // ===================================================================
 state.progRespFilter = null; // null = todos
 state.progDiscFilter = null;
+state.filterVisibility = null; // null = tudo visível (padrão)
+const FILTER_GROUPS = [
+  { title: 'Segmentação', items: [
+    {key:'class', label:'Classificação'},
+    {key:'disc', label:'Disciplina'},
+    {key:'status', label:'Status do prazo'},
+    {key:'responsavel', label:'Responsável'},
+    {key:'local', label:'Local'},
+  ]},
+  { title: 'Período', items: [
+    {key:'semana', label:'Semana'},
+    {key:'hoje', label:'Programação hoje'},
+    {key:'semanaProg', label:'Programação semana'},
+  ]},
+  { title: 'Busca', items: [
+    {key:'busca', label:'Busca por texto'},
+  ]},
+];
+const FILTER_DEFS = FILTER_GROUPS.flatMap(g=>g.items);
+function applyFilterVisibility(){
+  const hidden = state.filterVisibility || {};
+  document.querySelectorAll('[data-filter-key]').forEach(el=>{
+    const key = el.dataset.filterKey;
+    el.style.display = hidden[key] === false ? 'none' : '';
+  });
+}
+function buildFilterConfigPanel(){
+  const panel = document.getElementById('filter-config-panel');
+  if(!panel) return;
+  const hidden = state.filterVisibility || {};
+  panel.innerHTML = `
+    <div class="fc-panel-title">Filtros visíveis</div>
+    <p class="fc-panel-note">Escolha o que aparece na barra — vale pra todo mundo.</p>
+    ${FILTER_GROUPS.map(g => `
+      <div class="fc-group">
+        <div class="fc-group-title">${g.title}</div>
+        <div class="egp-values">
+          ${g.items.map(f=>`<label class="egp-value"><input type="checkbox" data-fc-key="${f.key}" ${hidden[f.key]===false?'':'checked'}> ${f.label}</label>`).join('')}
+        </div>
+      </div>`).join('')}
+    <div class="fc-panel-actions">
+      <button type="button" class="fc-reset-btn" id="fc-reset-all">Mostrar todos</button>
+    </div>`;
+  panel.querySelectorAll('[data-fc-key]').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      if(!state.filterVisibility) state.filterVisibility = {};
+      state.filterVisibility[e.target.dataset.fcKey] = e.target.checked;
+      applyFilterVisibility();
+      saveConfig('filter_visibility', state.filterVisibility);
+    });
+  });
+  document.getElementById('fc-reset-all')?.addEventListener('click', ()=>{
+    state.filterVisibility = {};
+    buildFilterConfigPanel();
+    applyFilterVisibility();
+    saveConfig('filter_visibility', state.filterVisibility);
+  });
+}
+async function fetchFilterVisibility(){
+  const valor = await fetchConfig('filter_visibility');
+  if(valor && typeof valor === 'object') state.filterVisibility = valor;
+  buildFilterConfigPanel();
+  applyFilterVisibility();
+}
+const ADER_COLUMN_DEFS = [
+  {key:'previsto', label:'Previsto (Semana)'},
+  {key:'real', label:'Real (Semana)'},
+  {key:'diaPrevisto', label:'Previsto (Dia)'},
+  {key:'diaReal', label:'Real (Dia)'},
+  {key:'acumulado', label:'Acumulado até a Data-Base'},
+  {key:'aderencia', label:'Aderência (Semana)', mandatory:true},
+];
+const PROG_LIST_COLUMN_DEFS = [
+  {key:'item', label:'Item', mandatory:true},
+  {key:'disciplina', label:'Disciplina'},
+  {key:'responsavel', label:'Responsável'},
+  {key:'descricao', label:'Descrição'},
+  {key:'status', label:'Status'},
+  {key:'termino_date', label:()=> state.metaInterna ? 'Data Programação int.' : 'Data Prevista de Término', mandatory:true},
+  {key:'termino_real_date', label:()=> state.metaInterna ? 'Data Real Int.' : 'Data Real'},
+];
+state.aderColumns = null; // null = todas visíveis
+state.progListColumns = null;
+let dragColKey2 = null;
+function buildDragColumnPanel(panelId, defs, orderStateKey, visibleStateKey, configName, onChange){
+  const panel = document.getElementById(panelId);
+  if(!panel) return;
+  if(!state[orderStateKey]) state[orderStateKey] = defs.map(d=>d.key);
+  if(!state[visibleStateKey]) state[visibleStateKey] = new Set(defs.map(d=>d.key));
+  const order = state[orderStateKey];
+  const visible = state[visibleStateKey];
+  const persist = ()=> saveConfig(configName, {ordem: order, visiveis: Array.from(visible)});
+  panel.innerHTML = '<div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--text-dim);padding:4px 8px 8px;">Arraste ⠿ para reordenar · marque para exibir/ocultar</div>';
+  order.forEach((key, idx)=>{
+    const col = defs.find(c=>c.key===key);
+    if(!col) return;
+    const row = document.createElement('div');
+    row.className = 'fdrop-item col-order-item';
+    row.draggable = true;
+    row.dataset.key = col.key;
+    const checkboxHtml = col.mandatory
+      ? `<span class="col-lock" title="Coluna sempre visível">🔒</span>`
+      : `<input type="checkbox" ${visible.has(col.key)?'checked':''}>`;
+    row.innerHTML = `
+      <span class="col-drag-handle" title="Arraste para reordenar">⠿</span>
+      <label style="display:flex;align-items:center;gap:8px;flex:1;cursor:pointer;">
+        ${checkboxHtml} <span>${colLabel(col)}</span>
+      </label>
+      <button class="col-move-btn" data-move="up" data-key="${col.key}" title="Mover para cima" ${idx===0?'disabled':''}>↑</button>
+      <button class="col-move-btn" data-move="down" data-key="${col.key}" title="Mover para baixo" ${idx===order.length-1?'disabled':''}>↓</button>
+    `;
+    if(!col.mandatory){
+      row.querySelector('input').addEventListener('change', e=>{
+        if(e.target.checked) visible.add(col.key); else visible.delete(col.key);
+        onChange();
+        persist();
+      });
+    }
+    row.addEventListener('dragstart', e=>{
+      dragColKey2 = col.key;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', ()=> row.classList.remove('dragging'));
+    row.addEventListener('dragover', e=>{ e.preventDefault(); row.classList.add('drag-over'); });
+    row.addEventListener('dragleave', ()=> row.classList.remove('drag-over'));
+    row.addEventListener('drop', e=>{
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if(!dragColKey2 || dragColKey2 === col.key) return;
+      const from = order.indexOf(dragColKey2);
+      const to = order.indexOf(col.key);
+      order.splice(from, 1);
+      order.splice(to, 0, dragColKey2);
+      dragColKey2 = null;
+      buildDragColumnPanel(panelId, defs, orderStateKey, visibleStateKey, configName, onChange);
+      onChange();
+      persist();
+    });
+    panel.appendChild(row);
+  });
+  panel.querySelectorAll('.col-move-btn').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      const key = btn.dataset.key;
+      const dir = btn.dataset.move;
+      const i = order.indexOf(key);
+      const j = dir === 'up' ? i-1 : i+1;
+      if(j < 0 || j >= order.length) return;
+      [order[i], order[j]] = [order[j], order[i]];
+      buildDragColumnPanel(panelId, defs, orderStateKey, visibleStateKey, configName, onChange);
+      onChange();
+      persist();
+    });
+  });
+}
+function getOrderedVisibleCols(defs, orderStateKey, visibleStateKey){
+  const order = state[orderStateKey] || defs.map(d=>d.key);
+  const visible = state[visibleStateKey];
+  return order.map(k => defs.find(c=>c.key===k))
+    .filter(c => c && (c.mandatory || !visible || visible.has(c.key)))
+    .filter(c => !c.onlyMetaInterna || state.metaInterna);
+}
+async function fetchDragColumnsConfig(configName, orderStateKey, visibleStateKey, defs){
+  const valor = await fetchConfig(configName);
+  if(valor && Array.isArray(valor.ordem)){
+    const validKeys = defs.map(c=>c.key);
+    state[orderStateKey] = valor.ordem.filter(k=>validKeys.includes(k));
+    defs.forEach(c=>{ if(!state[orderStateKey].includes(c.key)) state[orderStateKey].push(c.key); });
+  }
+  if(valor && Array.isArray(valor.visiveis)){
+    state[visibleStateKey] = new Set(valor.visiveis);
+    defs.forEach(c=>{ if(c.mandatory) state[visibleStateKey].add(c.key); });
+  }
+}
+document.getElementById('ader-cols-btn')?.addEventListener('click', ()=>{
+  buildDragColumnPanel('ader-cols-panel', ADER_COLUMN_DEFS, 'aderColumnOrder', 'aderColumns', 'ader_cols_config', renderProgramacao);
+});
+document.getElementById('prog-cols-btn')?.addEventListener('click', ()=>{
+  buildDragColumnPanel('prog-cols-panel', PROG_LIST_COLUMN_DEFS, 'progListColumnOrder', 'progListColumns', 'prog_list_cols_config', renderProgramacao);
+});
 function buildOneProgPicker(panelId, btnId, allValues, stateKey, label){
   const panel = document.getElementById(panelId);
   const btn = document.getElementById(btnId);
@@ -4111,7 +4454,62 @@ document.getElementById('prog-clear-filters-btn')?.addEventListener('click', ()=
   state.progDiscFilter = null;
   renderProgramacao();
 });
+function buildDayChartConfig(scoped){
+  const previstoCounts = {}, realCounts = {};
+  scoped.forEach(it=>{
+    if(it.termino_date === state.today) previstoCounts[it.disciplina] = (previstoCounts[it.disciplina]||0) + 1;
+    if(it.termino_real_date === state.today) realCounts[it.disciplina] = (realCounts[it.disciplina]||0) + 1;
+  });
+  const discs = Array.from(new Set([...Object.keys(previstoCounts), ...Object.keys(realCounts)])).sort((a,b)=>(previstoCounts[b]||0)-(previstoCounts[a]||0));
+  const style = state.chartLabelStyle.progday;
+  const totalPrevisto = discs.reduce((s,d)=>s+(previstoCounts[d]||0),0);
+  const totalReal = discs.reduce((s,d)=>s+(realCounts[d]||0),0);
+  return {
+    discs, totalPrevisto, totalReal,
+    apexOptions:{
+      chart:{ type:'bar', height:'100%', toolbar:{show:false}, fontFamily:'Inter, sans-serif', animations:{speed:250} },
+      series:[
+        { name:'Previsto', data: discs.map(d=>previstoCounts[d]||0) },
+        { name:'Real', data: discs.map(d=>realCounts[d]||0) },
+      ],
+      colors:['#002B5C', '#92D050'],
+      plotOptions:{ bar:{ horizontal:false, borderRadius:6, columnWidth:'62%', dataLabels:{ position:'top' } } },
+      xaxis:{ categories: discs, labels:{style:{colors:'#0B1F33', fontFamily:'Inter', fontSize:'13px', fontWeight:600}} },
+      yaxis:{ labels:{style:{colors:'#3E5468', fontFamily:'IBM Plex Mono', fontSize:'11px'}}, forceNiceScale:true },
+      legend:{ position:'top', horizontalAlign:'center', labels:{colors:'#0B1F33'}, fontSize:'13px', fontWeight:600, fontFamily:'Inter', markers:{radius:4} },
+      // rótulos sempre visíveis, sem depender de hover — pensado pra
+      // apresentação em reunião, onde ninguém vai passar o mouse no gráfico
+      dataLabels:{ enabled:true, offsetY:-6, style:{fontSize:'13px', colors:['#0B1F33'], fontFamily:'Inter', fontWeight:700} },
+      grid:{ borderColor:'rgba(217,232,206,0.5)', strokeDashArray:3 },
+      tooltip:{ theme:'light' },
+    }
+  };
+}
+let dayChartApex = null;
+function renderDayChart(){
+  const label = document.getElementById('progday-label');
+  if(label) label.textContent = fmtDate(state.today);
+  const inScope = it => (!state.progRespFilter || state.progRespFilter.has(it.responsavel))
+    && (!state.progDiscFilter || state.progDiscFilter.has(it.disciplina));
+  const scoped = ITEMS.filter(inScope);
+  const {discs, apexOptions} = buildDayChartConfig(scoped);
+  const wrap = document.getElementById('progday-wrap');
+  const emptyMsg = document.getElementById('progday-empty');
+  if(discs.length === 0){
+    emptyMsg.style.display = 'block'; wrap.style.display = 'none';
+    if(dayChartApex){ dayChartApex.destroy(); dayChartApex = null; }
+    return;
+  }
+  emptyMsg.style.display = 'none'; wrap.style.display = 'block';
+  if(dayChartApex){
+    dayChartApex.updateOptions(apexOptions, true, false);
+  } else {
+    dayChartApex = new ApexCharts(document.getElementById('chart-progday'), apexOptions);
+    dayChartApex.render();
+  }
+}
 function renderProgramacao(){
+  renderDayChart();
   const {start, end} = getWeekWindow(state.today);
   const weekCode = weekLabel(mondayOf(state.today));
   const label = document.getElementById('prog-week-label');
@@ -4163,15 +4561,28 @@ function renderProgramacao(){
     accumByResp[it.responsavel].previsto++;
     if(it.termino_real_date && it.termino_real_date <= state.today) accumByResp[it.responsavel].real++;
   });
+  // Previsto/Real "no dia" — usa a data-base como referência do dia específico
+  // (não a semana toda): quantas atividades daquele responsável estão previstas
+  // exatamente para hoje, e quantas foram de fato realizadas hoje
+  const dayByResp = {};
+  scoped.forEach(it=>{
+    if(!dayByResp[it.responsavel]) dayByResp[it.responsavel] = {previsto:0, real:0};
+    if(it.termino_date === state.today) dayByResp[it.responsavel].previsto++;
+    if(it.termino_real_date === state.today) dayByResp[it.responsavel].real++;
+  });
   const respRows = Object.keys(byResp).map(r=>({
     responsavel:r, previsto:byResp[r].previsto, real:byResp[r].real,
     aderencia: byResp[r].previsto ? byResp[r].real/byResp[r].previsto : (byResp[r].real>0 ? 1 : 0),
     accumPrevisto: (accumByResp[r]||{previsto:0}).previsto, accumReal: (accumByResp[r]||{real:0}).real,
+    diaPrevisto: (dayByResp[r]||{previsto:0}).previsto, diaReal: (dayByResp[r]||{real:0}).real,
   })).sort((a,b)=> b.aderencia - a.aderencia);
 
   const emptyMsg = document.getElementById('prog-aderencia-empty');
   const tableWrapEl = document.getElementById('prog-aderencia-wrap');
+  const aderHead = document.getElementById('prog-aderencia-head');
   const aderTbody = document.getElementById('prog-aderencia-body');
+  const aderCols = getOrderedVisibleCols(ADER_COLUMN_DEFS, 'aderColumnOrder', 'aderColumns');
+  if(aderHead) aderHead.innerHTML = '<th>Responsável</th>' + aderCols.map(c=>`<th>${c.label}</th>`).join('');
   if(respRows.length === 0){
     emptyMsg.style.display = 'block'; tableWrapEl.style.display = 'none';
   } else {
@@ -4180,37 +4591,92 @@ function renderProgramacao(){
       const pct = Math.round(r.aderencia*100);
       const color = r.aderencia >= 1 ? '#3E7A15' : (r.aderencia >= 0.7 ? '#C98A16' : '#E5484D');
       const accumPct = r.accumPrevisto ? Math.round((r.accumReal/r.accumPrevisto)*100) : (r.accumReal>0 ? 100 : null);
-      return `
-      <tr>
-        <td class="pa-resp">${r.responsavel}</td>
-        <td class="num">${r.previsto}</td>
-        <td class="num">${r.real}</td>
-        <td class="pa-accum"><b>${r.accumReal}</b> / ${r.accumPrevisto}${accumPct!==null ? ` <span style="color:${accumPct>=100?'#2E7BC4':(accumPct>=70?'var(--text-dim)':'var(--red)')};font-weight:${accumPct>=100?700:400};">(${accumPct}%${accumPct>100?' ↑':''})</span>` : ''}</td>
-        <td>
+      const cellsHtml = aderCols.map(c=>{
+        if(c.key==='previsto') return `<td class="num">${r.previsto}</td>`;
+        if(c.key==='real') return `<td class="num">${r.real}</td>`;
+        if(c.key==='diaPrevisto') return `<td class="num">${r.diaPrevisto}</td>`;
+        if(c.key==='diaReal') return `<td class="num">${r.diaReal}</td>`;
+        if(c.key==='acumulado') return `<td class="pa-accum"><b>${r.accumReal}</b> / ${r.accumPrevisto}${accumPct!==null ? ` <span style="color:${accumPct>=100?'#2E7BC4':(accumPct>=70?'var(--text-dim)':'var(--red)')};font-weight:${accumPct>=100?700:400};">(${accumPct}%${accumPct>100?' ↑':''})</span>` : ''}</td>`;
+        if(c.key==='aderencia') return `<td>
           <div class="pa-bar-cell">
             <div class="pa-bar-track"><div class="pa-bar-fill" style="width:${Math.min(pct,100)}%;background:${color};"></div></div>
             <span class="pa-bar-pct" style="color:${color};">${pct}%</span>
           </div>
-        </td>
-      </tr>`;
-    }).join('');
+        </td>`;
+        return '';
+      }).join('');
+      return `<tr><td class="pa-resp">${r.responsavel}</td>${cellsHtml}</tr>`;
+    }).join('') + (()=>{
+      // linha de totais — soma cada coluna numérica entre todos os responsáveis
+      const tot = respRows.reduce((acc,r)=>({
+        previsto: acc.previsto+r.previsto, real: acc.real+r.real,
+        diaPrevisto: acc.diaPrevisto+r.diaPrevisto, diaReal: acc.diaReal+r.diaReal,
+        accumPrevisto: acc.accumPrevisto+r.accumPrevisto, accumReal: acc.accumReal+r.accumReal,
+      }), {previsto:0, real:0, diaPrevisto:0, diaReal:0, accumPrevisto:0, accumReal:0});
+      const totAderencia = tot.previsto ? tot.real/tot.previsto : (tot.real>0?1:0);
+      const totPct = Math.round(totAderencia*100);
+      const totColor = totAderencia >= 1 ? '#3E7A15' : (totAderencia >= 0.7 ? '#C98A16' : '#E5484D');
+      const totAccumPct = tot.accumPrevisto ? Math.round((tot.accumReal/tot.accumPrevisto)*100) : (tot.accumReal>0 ? 100 : null);
+      const totCells = aderCols.map(c=>{
+        if(c.key==='previsto') return `<td class="num">${tot.previsto}</td>`;
+        if(c.key==='real') return `<td class="num">${tot.real}</td>`;
+        if(c.key==='diaPrevisto') return `<td class="num">${tot.diaPrevisto}</td>`;
+        if(c.key==='diaReal') return `<td class="num">${tot.diaReal}</td>`;
+        if(c.key==='acumulado') return `<td class="pa-accum"><b>${tot.accumReal}</b> / ${tot.accumPrevisto}${totAccumPct!==null ? ` <span style="color:${totAccumPct>=100?'#2E7BC4':(totAccumPct>=70?'var(--text-dim)':'var(--red)')};">(${totAccumPct}%)</span>` : ''}</td>`;
+        if(c.key==='aderencia') return `<td>
+          <div class="pa-bar-cell">
+            <div class="pa-bar-track"><div class="pa-bar-fill" style="width:${Math.min(totPct,100)}%;background:${totColor};"></div></div>
+            <span class="pa-bar-pct" style="color:${totColor};">${totPct}%</span>
+          </div>
+        </td>`;
+        return '';
+      }).join('');
+      return `<tr class="pa-total-row"><td class="pa-resp">Total</td>${totCells}</tr>`;
+    })();
   }
 
   // lista de pendências da semana (previstas OU realizadas no período, no escopo filtrado)
   const weekIds = new Set([...previstoItems, ...realItems].map(it=>it.item));
-  const weekList = scoped.filter(it=>weekIds.has(it.item)).sort((a,b)=> (a.termino_date||'9999') < (b.termino_date||'9999') ? -1 : 1);
+  let weekList = scoped.filter(it=>weekIds.has(it.item));
+  const progSortKey = state.progSortKey || 'termino_date';
+  const progSortDir = state.progSortDir || 1;
+  weekList = weekList.slice().sort((a,b)=>{
+    let av = a[progSortKey], bv = b[progSortKey];
+    if(typeof av === 'string') av = av.toLowerCase();
+    if(typeof bv === 'string') bv = bv.toLowerCase();
+    if(av == null) av = '';
+    if(bv == null) bv = '';
+    if(av < bv) return -1 * progSortDir;
+    if(av > bv) return 1 * progSortDir;
+    return 0;
+  });
   const thead = document.getElementById('prog-table-head');
   const tbody = document.getElementById('prog-table-body');
-  if(thead) thead.innerHTML = '<th>Item</th><th>Disciplina</th><th>Responsável</th><th>Descrição</th><th>Status</th><th>Previsto</th><th>Real</th>';
+  const progCols = getOrderedVisibleCols(PROG_LIST_COLUMN_DEFS, 'progListColumnOrder', 'progListColumns');
+  if(thead){
+    thead.innerHTML = progCols.map(c=>`<th data-key="${c.key}" class="${c.key===progSortKey?'sorted':''}">${colLabel(c)}</th>`).join('');
+    thead.querySelectorAll('th[data-key]').forEach(th=>{
+      th.addEventListener('click', ()=>{
+        const key = th.dataset.key;
+        if(state.progSortKey === key){ state.progSortDir = (state.progSortDir||1) * -1; } else { state.progSortKey = key; state.progSortDir = 1; }
+        renderProgramacao();
+      });
+    });
+  }
+  const progCellRenderers = {
+    item: it=>`<td>${it.item}</td>`,
+    disciplina: it=>`<td>${it.disciplina}</td>`,
+    responsavel: it=>`<td>${it.responsavel}</td>`,
+    descricao: it=>`<td class="desc">${it.descricao||''}</td>`,
+    status: it=>`<td><span class="badge badge-${it.status}"><span class="badge-dot"></span>${STATUS_LABEL[it.status]||it.status}</span></td>`,
+    termino_date: it=>`<td>${it.termino_date ? fmtDate(it.termino_date) : '—'}</td>`,
+    termino_real_date: it=>`<td>${it.termino_real_date ? fmtDate(it.termino_real_date) : '—'}</td>`,
+    termino_real_date_interno: it=>`<td>${it.termino_real_date_interno ? fmtDate(it.termino_real_date_interno) : '—'}</td>`,
+  };
   if(tbody){
-    tbody.innerHTML = weekList.length ? weekList.map(it=>`
-      <tr>
-        <td>${it.item}</td><td>${it.disciplina}</td><td>${it.responsavel}</td>
-        <td class="desc">${it.descricao||''}</td>
-        <td><span class="badge badge-${it.status}"><span class="badge-dot"></span>${STATUS_LABEL[it.status]||it.status}</span></td>
-        <td>${it.termino_date ? fmtDate(it.termino_date) : '—'}</td>
-        <td>${it.termino_real_date ? fmtDate(it.termino_real_date) : '—'}</td>
-      </tr>`).join('') : '<tr><td colspan="7" class="empty-state">Nenhuma atividade prevista ou realizada nesta semana com os filtros atuais.</td></tr>';
+    tbody.innerHTML = weekList.length ? weekList.map(it=>
+      `<tr>${progCols.map(c=>progCellRenderers[c.key](it)).join('')}</tr>`
+    ).join('') : `<tr><td colspan="${progCols.length}" class="empty-state">Nenhuma atividade prevista ou realizada nesta semana com os filtros atuais.</td></tr>`;
   }
 }
 
@@ -4542,13 +5008,14 @@ function todayLinePlugin(todayIdxRef){
 // RÓTULOS DE DADOS — plugin genérico que desenha o valor sobre cada
 // barra/ponto quando ativado (botão "🏷️ Rótulos" no Dashboard e na Curva)
 // ===================================================================
-state.showDataLabels = {disc:false, week:false, curve:false, histogram:false};
+state.showDataLabels = {disc:false, week:false, curve:{previsto:false, real:false, previstoAcum:true, realAcum:false}, histogram:false, progday:false};
 state.weekChartOrientation = 'horizontal';
 state.chartLabelStyle = {
   disc:  {size:10.5, color:'#000000', position:'above'},
   week:  {size:10.5, color:'#000000', position:'above'},
   curve: {size:10.5, color:'#000000', position:'above'},
   histogram: {size:10.5, color:'#000000', position:'above'},
+  progday: {size:10.5, color:'#000000', position:'above'},
 };
 state.histGranularity = 'week';
 state.histDayScope = 'geral'; // 'geral' = dia a dia até a última data; 'semana' = só a semana corrente
@@ -4625,6 +5092,7 @@ function toggleDataLabels(key, forceValue){
   if(key === 'week') renderWeekChart(filtered());
   if(key === 'curve') renderCurve(filtered());
   if(key === 'histogram') renderHistogramChart();
+  if(key === 'progday') renderDayChart();
   saveChartPrefs();
 }
 
@@ -4655,6 +5123,11 @@ function wireChartGearMenus(){
         const posSelect = panel.querySelector('.cgp-position');
         const typeSelect = panel.querySelector('.cgp-chart-type');
         if(labelsCb) labelsCb.checked = !!state.showDataLabels[key];
+        if(key === 'curve'){
+          panel.querySelectorAll('.cgp-curve-label-series').forEach(cb=>{
+            cb.checked = !!(state.showDataLabels.curve || {})[cb.dataset.series];
+          });
+        }
         if(sizeInput && style){ sizeInput.value = style.size; if(sizeVal) sizeVal.textContent = style.size + 'px'; }
         if(colorInput && style) colorInput.value = style.color;
         if(posSelect && style) posSelect.value = style.position;
@@ -4678,6 +5151,17 @@ function wireChartGearMenus(){
     const labelsCb = panel.querySelector('.cgp-labels-toggle');
     if(labelsCb) labelsCb.addEventListener('change', e=> toggleDataLabels(key, e.target.checked));
 
+    panel.querySelectorAll('.cgp-curve-label-series').forEach(cb=>{
+      cb.addEventListener('change', e=>{
+        if(!state.showDataLabels.curve || typeof state.showDataLabels.curve !== 'object'){
+          state.showDataLabels.curve = {previsto:false, real:false, previstoAcum:false, realAcum:false};
+        }
+        state.showDataLabels.curve[e.target.dataset.series] = e.target.checked;
+        renderCurve(filtered());
+        saveChartPrefs();
+      });
+    });
+
     const adjustToggle = panel.querySelector('.cgp-adjust-toggle');
     const adjustBody = panel.querySelector('.cgp-adjust-body');
     if(adjustToggle && adjustBody){
@@ -4693,6 +5177,7 @@ function wireChartGearMenus(){
       if(key === 'week') renderWeekChart(filtered());
       if(key === 'curve') renderCurve(filtered());
       if(key === 'histogram') renderHistogramChart();
+      if(key === 'progday') renderDayChart();
       saveChartPrefs();
     };
     const sizeInput = panel.querySelector('.cgp-size');
@@ -4774,6 +5259,16 @@ function chartConfig(labels, due, dueReal, planned, real, hasReal, todayIdxRef){
   yaxis.push(leftAxisVisible);                        // "Remanescente planejado" — eixo esquerdo visível
   if(hasReal) yaxis.push(leftAxisHidden);              // "Remanescente realizado" — mesmo eixo esquerdo, oculto
 
+  const nameToLabelKey = {
+    'Previsto no período': 'previsto',
+    'Real no período (baixas)': 'real',
+    'Remanescente planejado': 'previstoAcum',
+    'Remanescente realizado (baixas)': 'realAcum',
+  };
+  const seriesLabelMap = series.map(s => nameToLabelKey[s.name]);
+  const labelFlags = (state.showDataLabels.curve && typeof state.showDataLabels.curve === 'object')
+    ? state.showDataLabels.curve : {previsto:false, real:false, previstoAcum:false, realAcum:false};
+
   const annotations = { xaxis: [] };
   if(todayIdxRef.value >= 0 && labels[todayIdxRef.value] !== undefined){
     annotations.xaxis.push({
@@ -4795,10 +5290,10 @@ function chartConfig(labels, due, dueReal, planned, real, hasReal, todayIdxRef){
     tooltip:{ theme:'light', shared:true, intersect:false },
     grid:{ borderColor:'rgba(217,232,206,0.7)', padding:{top:20} },
     annotations,
-    dataLabels:{ enabled: state.showDataLabels.curve,
+    dataLabels:{ enabled: Object.values(labelFlags).some(v=>v),
       style:{ fontSize: state.chartLabelStyle.curve.size+'px', colors:[state.chartLabelStyle.curve.color], fontFamily:'IBM Plex Mono', fontWeight:700 },
       offsetY: apexLineLabelOffsetY(state.chartLabelStyle.curve.position),
-      enabledOnSeries: [series.findIndex(s=>s.name==='Remanescente planejado')].filter(i=>i>=0) },
+      enabledOnSeries: seriesLabelMap.map((key, idx)=> labelFlags[key] ? idx : -1).filter(i=>i>=0) },
   };
 }
 
@@ -4912,6 +5407,18 @@ function openGenericChartOverlay(chartKey){
     document.querySelectorAll('.hist-value-toggle-group .gran-btn').forEach(b=>b.classList.toggle('active', b.dataset.valtype===state.histValueType));
     document.querySelectorAll('.hist-day-scope-toggle-group').forEach(el=>{ el.style.display = (state.histGranularity==='day') ? 'flex' : 'none'; });
     const opts = buildHistogramChartConfig().apexOptions;
+    genericChartApex = new ApexCharts(apexDiv, Object.assign({}, opts, {chart: Object.assign({}, opts.chart, {height:440})}));
+    genericChartApex.render();
+    titleEl.textContent = title;
+    overlay.classList.add('open');
+    return;
+  } else if(chartKey === 'progday'){
+    title = 'Programação do Dia por Disciplina — Visão Expandida';
+    canvas.style.display = 'none';
+    apexDiv.style.display = 'block';
+    const inScope = it => (!state.progRespFilter || state.progRespFilter.has(it.responsavel))
+      && (!state.progDiscFilter || state.progDiscFilter.has(it.disciplina));
+    const opts = buildDayChartConfig(ITEMS.filter(inScope)).apexOptions;
     genericChartApex = new ApexCharts(apexDiv, Object.assign({}, opts, {chart: Object.assign({}, opts.chart, {height:440})}));
     genericChartApex.render();
     titleEl.textContent = title;
@@ -5311,6 +5818,7 @@ const CELL_RENDERERS = {
   qtd: i => `<td class="num">${i.qtd != null ? i.qtd + (i.und?(' '+i.und):'') : '—'}</td>`,
   responsavel: i => `<td>${i.responsavel && i.responsavel !== 'Não atribuído' ? i.responsavel : '<span style="color:var(--text-dim);">Não atribuído</span>'}</td>`,
   programacao_interna: i => `<td class="num">${i.programacao_interna_date ? fmtDate(i.programacao_interna_date) : '—'}</td>`,
+  termino_real_interno: i => `<td class="num">${i.termino_real_date_interno ? fmtDate(i.termino_real_date_interno) : '—'}</td>`,
   descricao: i => `<td class="desc">${isItemNovo(i) ? `<span class="badge badge-novo" title="Cadastrado após o plano ter sido salvo"><span class="badge-dot"></span>🆕 Novo</span> ` : ''}${i.descricao}${i.obs ? `<div style="color:var(--text-dim);font-size:11px;margin-top:2px;">${i.obs}</div>` : ''}</td>`,
   status: i => `<td><span class="badge badge-${i.status}"><span class="badge-dot"></span>${STATUS_LABEL[i.status]}</span></td>`,
 };
@@ -5321,7 +5829,7 @@ function renderTableHead(){
   const cols = getOrderedVisibleColumns();
   let html = '<tr>';
   if(state.role === 'admin') html += `<th style="width:32px;"><input type="checkbox" id="select-all-items" title="Selecionar todos os itens visíveis"></th>`;
-  cols.forEach(c=>{ html += `<th data-key="${c.key}">${c.label}</th>`; });
+  cols.forEach(c=>{ html += `<th data-key="${c.key}">${colLabel(c)}</th>`; });
   if(state.role === 'admin') html += `<th>Ações</th>`;
   html += '</tr>';
   thead.innerHTML = html;
@@ -5744,30 +6252,46 @@ function renderMilestoneTimeline(){
     const color = statusKey==='vencido' ? '#E5484D' : statusKey==='em_risco' ? '#F2B33D' : '#92D050';
     const badgeClass = statusKey==='vencido' ? 'badge-vencido' : statusKey==='em_risco' ? '' : 'badge-a_vencer';
     const badgeStyle = statusKey==='em_risco' ? 'background:rgba(242,179,61,0.16);color:#B8790C;' : '';
+    const prefix = m.id + '.';
+    const children = ITEMS.filter(it => it.item && (String(it.item) === String(m.id) || String(it.item).startsWith(prefix)));
+    const totalCh = children.length;
+    const doneCh = children.filter(it => it.status === 'concluido').length;
+    const pctCh = totalCh ? Math.round((doneCh/totalCh)*100) : null;
+    const progressHtml = pctCh === null ? '' : `
+      <div class="ms-progress">
+        <div class="ms-progress-track"><div class="ms-progress-fill" style="width:${pctCh}%;background:${color};"></div></div>
+        <span class="ms-progress-label">${pctCh}% concluído <span class="ms-progress-sub">(${doneCh}/${totalCh})</span></span>
+      </div>`;
     return `<div class="milestone-node">
       <div class="ms-dot" style="color:${color};background:${color};"></div>
       <div class="ms-date">${fmtDateShort(m.termino_date)}</div>
       <div class="ms-name">${m.nome}</div>
       <div class="ms-status"><span class="badge ${badgeClass}" style="${badgeStyle}"><span class="badge-dot"></span>${status}</span></div>
+      ${progressHtml}
     </div>`;
   }).join('');
 }
 
-function renderOneHeatmap(wrapId, list, dateField, colorRgb){
+function renderOneHeatmap(wrapId, list, dateField, colorRgb, fixedDiscs){
   const wrap = document.getElementById(wrapId);
   if(!wrap) return;
   const base = list.filter(it=>it[dateField]);
+  // as disciplinas (linhas) ficam congeladas — sempre as mesmas do Previsto,
+  // mesmo que uma disciplina não tenha nenhum item Realizado ainda (a linha
+  // aparece com "·" em vez de sumir do heatmap)
+  const discs = fixedDiscs || Array.from(new Set(list.map(it=>it.disciplina))).sort();
   if(base.length === 0){
-    wrap.innerHTML = `<div class="empty-state">Sem itens ${dateField==='termino_date' ? 'com data prevista' : 'baixados'} para montar o heatmap.</div>`;
-    return;
+    if(!fixedDiscs){
+      wrap.innerHTML = `<div class="empty-state">Sem itens ${dateField==='termino_date' ? 'com data prevista' : 'baixados'} para montar o heatmap.</div>`;
+      return;
+    }
   }
   const weekKeyOf = iso => mondayOf(iso);
   const weeks = Array.from(new Set(base.map(it=>weekKeyOf(it[dateField])))).sort();
-  const discs = Array.from(new Set(base.map(it=>it.disciplina))).sort();
 
   const matrix = {};
   discs.forEach(d=>{ matrix[d] = {}; weeks.forEach(w=>matrix[d][w]=0); });
-  base.forEach(it=>{ matrix[it.disciplina][weekKeyOf(it[dateField])]++; });
+  base.forEach(it=>{ if(matrix[it.disciplina]) matrix[it.disciplina][weekKeyOf(it[dateField])]++; });
 
   let maxVal = 0;
   discs.forEach(d=> weeks.forEach(w=>{ if(matrix[d][w] > maxVal) maxVal = matrix[d][w]; }));
@@ -5789,8 +6313,9 @@ function renderOneHeatmap(wrapId, list, dateField, colorRgb){
   wrap.innerHTML = html;
 }
 function renderHeatmap(list){
-  renderOneHeatmap('heatmap-wrap', list, 'termino_date', '0,43,92');       // Previsto — azul (navy)
-  renderOneHeatmap('heatmap-real-wrap', list, 'termino_real_date', '62,122,21'); // Realizado — verde
+  const fixedDiscs = Array.from(new Set(list.map(it=>it.disciplina))).sort();
+  renderOneHeatmap('heatmap-wrap', list, 'termino_date', '0,43,92', fixedDiscs);       // Previsto — azul (navy)
+  renderOneHeatmap('heatmap-real-wrap', list, 'termino_real_date', '62,122,21', fixedDiscs); // Realizado — verde, mesmas disciplinas do Previsto
 }
 
 function renderAll(){
@@ -5859,6 +6384,7 @@ function parseSheet(rows){
   const cObs = colIndex(header, 'Observação', 'Observacao');
   const cResp = colIndex(header, 'Responsável', 'Responsavel', 'Resp.', 'Resp');
   const cProgInterna = colIndex(header, 'Data Programação Interna', 'Data Programacao Interna', 'Programação Interna', 'Programacao Interna');
+  const cTermRealInterno = colIndex(header, 'Data Real - Interno', 'Data Real Interno', 'Real Interno', 'Data Real Interna');
 
   if(cItem < 0 || cDisc < 0) return null;
 
@@ -5887,6 +6413,7 @@ function parseSheet(rows){
         obs: cObs>=0 ? row[cObs] : null,
         resp: cResp>=0 ? row[cResp] : null,
         progInterna: cProgInterna>=0 ? row[cProgInterna] : null,
+        termRealInterno: cTermRealInterno>=0 ? row[cTermRealInterno] : null,
       };
       byId[rec.itemId] = rec;
       rawRows.push(rec);
@@ -5920,6 +6447,7 @@ function parseSheet(rows){
         obs: normStr(rec.obs) || '',
         responsavel: normStr(rec.resp) || '',
         programacao_interna_date: excelCellToISO(rec.progInterna),
+        termino_real_date_interno: excelCellToISO(rec.termRealInterno),
       });
     });
 
@@ -5932,7 +6460,7 @@ function parseSheet(rows){
       const termISO = excelCellToISO(rec.termPrev);
       if(!termISO) return;
       const name = normStr(rec.descricao) || normStr(resolveField(rec,'local',0)) || rec.itemId;
-      milestones.push({id: rec.itemId, nome: name, termino_date: termISO});
+      milestones.push({id: rec.itemId, nome: name, termino_date: termISO, programacao_interna_date: excelCellToISO(rec.progInterna)});
     });
     milestones.sort((a,b)=> a.termino_date < b.termino_date ? -1 : 1);
 
@@ -5957,6 +6485,7 @@ function parseSheet(rows){
     const obs = cObs>=0 ? row[cObs] : null;
     const resp = cResp>=0 ? row[cResp] : null;
     const progInterna = cProgInterna>=0 ? row[cProgInterna] : null;
+    const termRealInterno = cTermRealInterno>=0 ? row[cTermRealInterno] : null;
 
     const isEmpty = (item===undefined||item===null||item==='') && (cls===undefined||cls===null||cls==='') && (desc===undefined||desc===null||desc==='');
     if(isEmpty){
@@ -5984,6 +6513,7 @@ function parseSheet(rows){
       obs: normStr(obs) || '',
       responsavel: normStr(resp) || '',
       programacao_interna_date: excelCellToISO(progInterna),
+      termino_real_date_interno: excelCellToISO(termRealInterno),
     });
   }
   return {items, meta:{hasPrevisao: cTerm>=0, hasReal: cTermReal>=0}};
@@ -7534,6 +8064,7 @@ async function bootstrap(){
     }
     await fetchPanelOrderConfig();
     await fetchPlanoConfig();
+    await fetchMetaInterna();
     applyPanelVisibility();
     buildPanelVisibilityControl();
     setupRealtime();
@@ -7557,7 +8088,11 @@ async function bootstrap(){
   applyDefaultFilterbarState();
   setupPanelReorder();
   fetchHistogramFromSupabase(); // roda sempre, com ou sem conexão — tem seu próprio fallback
+  fetchFilterVisibility(); // idem — sempre monta o painel de filtros, mesmo offline
+  fetchDragColumnsConfig('ader_cols_config', 'aderColumnOrder', 'aderColumns', ADER_COLUMN_DEFS);
+  fetchDragColumnsConfig('prog_list_cols_config', 'progListColumnOrder', 'progListColumns', PROG_LIST_COLUMN_DEFS);
   wirePlanoToggle();
+  wireMetaInternaToggle();
   renderCriticalAlert();
   renderExecSummary();
 }
